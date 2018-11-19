@@ -111,3 +111,6 @@ venv.bak/
 .idea/misc.xml
 .idea/vcs.xml
 .idea/nn_ku.iml
+
+# my stuff
+#task2/plots
