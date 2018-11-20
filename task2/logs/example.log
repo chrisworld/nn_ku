@@ -1,0 +1,12 @@
+Trainer Logger 
+Epochs: 10, Hidden Units: 100, HiddenLayer: 3, LearningRate: 0.001
+INFO:root:Iteration: 0 train loss: 3.3239778391117842train acc: 0.03655017633857006
+INFO:root:Iteration: 1 train loss: 3.3230776085663063train acc: 0.037031099711445976
+INFO:root:Iteration: 2 train loss: 3.322178503367632train acc: 0.03767233087528054
+INFO:root:Iteration: 3 train loss: 3.3212805206427722train acc: 0.03783263866623918
+INFO:root:Iteration: 4 train loss: 3.3203836575215675train acc: 0.03799294645719782
+INFO:root:Iteration: 5 train loss: 3.319487911136764train acc: 0.03847386983007374
+INFO:root:Iteration: 6 train loss: 3.3185932786240073train acc: 0.03879448541199102
+INFO:root:Iteration: 7 train loss: 3.317699757121891train acc: 0.038954793202949665
+INFO:root:Iteration: 8 train loss: 3.3168073437719983train acc: 0.03927540878486695
+INFO:root:Iteration: 9 train loss: 3.3159160357188906train acc: 0.04007694773966015
