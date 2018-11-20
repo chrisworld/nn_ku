@@ -33,7 +33,7 @@ class Trainer():
       train_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
       self.error_collector.addTrainError(train_loss)
       print("Iteration: ",k, " train loss: ",train_loss, "train acc: ", train_acc)
-      logging.info("Iteration: " + str(k) + " train loss: " + str(train_loss) + "train acc: " + str(train_acc))
+      logging.info("Iteration: " + str(k) + " train loss: " + str(train_loss) + " train acc: " + str(train_acc))
 
     # print errors
     self.error_collector.plotTrainTestError(self.model, self.batches.batch_size, learning_rate, epochs)
