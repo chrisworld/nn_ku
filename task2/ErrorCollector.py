@@ -20,10 +20,11 @@ class ErrorCollector():
     fig, ax = plt.subplots(1)
     ax.plot(self.train_error_list, color='blue', label='training', lw=2)
     ax.plot(self.test_error_list, color='green', label='testing', lw=2)
-    ax.set_title('Bla')
+    #ax.set_title('Bla')
     ax.set_xlabel('Training epoch')
-    ax.set_ylabel('Cross-entropy Loss')
+    ax.set_ylabel('Cross-entropy loss')
     plt.legend()
     #TODO: name
-    plt.savefig('plots/foo.png', dpi=150, bbox_inches='tight')
+    save_name = 'plots/' + 'Loss' + '_ep' + str(epochs) + '_hidu' + str(model.n_hidden) + '_hidl' + str(model.n_layer) + '_lr' + str(learning_rate) + '.png'
+    plt.savefig(save_name, dpi=150, bbox_inches='tight')
     #plt.show()

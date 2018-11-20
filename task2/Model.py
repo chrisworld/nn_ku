@@ -3,25 +3,50 @@ import numpy as np
 import numpy.random as rd
 
 class Model():
-  def __init__(self, n_in, n_hidden, n_out):
+  def __init__(self, n_in, n_hidden, n_out, n_layer=1):
     self.n_in = n_in
     self.n_hidden = n_hidden
     self.n_out = n_out
+    self.n_layer = n_layer
 
-    # Set the variables
-    self.W_hid = tf.Variable(rd.randn(self.n_in, self.n_hidden) / np.sqrt(self.n_in),trainable=True)
-    self.b_hid = tf.Variable(np.zeros(self.n_hidden),trainable=True)
-    self.w_out = tf.Variable(rd.randn(self.n_hidden, self.n_out) / np.sqrt(self.n_in),trainable=True)
-    self.b_out = tf.Variable(np.zeros(self.n_out))
+    # Weights, biases and activations
+    self.W = []
+    self.b = []
+    self.h = []
+
+    # create list of weights and biases upon each layers
+    for layer in range(n_layer + 1):
+      # set connections upon layer
+      if layer == 0: 
+        print('Input W/b in layer: ', layer)
+        self.W.append(tf.Variable(rd.randn(self.n_in, self.n_hidden) / np.sqrt(self.n_in), trainable=True))
+        self.b.append(tf.Variable(np.zeros(self.n_hidden), trainable=True))
+      elif layer == n_layer:
+        print('Output W/b in layer: ', layer)
+        self.W.append(tf.Variable(rd.randn(self.n_hidden, self.n_out) / np.sqrt(self.n_hidden), trainable=True))
+        self.b.append(tf.Variable(np.zeros(self.n_out), trainable=True))
+      else:
+        print('Hidden W/b in layer: ', layer)
+        self.W.append(tf.Variable(rd.randn(self.n_hidden, self.n_hidden) / np.sqrt(self.n_hidden), trainable=True))
+        self.b.append(tf.Variable(np.zeros(self.n_hidden), trainable=True))
 
     # Define the neuron operations
+    # input layer
     self.x = tf.placeholder(shape=(None, self.n_in),dtype=tf.float64)
-    self.y = tf.nn.tanh(tf.matmul(self.x, self.W_hid) + self.b_hid)
-    self.z = tf.nn.softmax(tf.matmul(self.y, self.w_out) + self.b_out)
+    # connections and activation of hidden layer
+    for layer in range(n_layer):
+      if layer == 0:
+        print('Activation h of layer: ', layer)
+        self.h.append(tf.nn.tanh(tf.matmul(self.x, self.W[0]) + self.b[0]))
+      else:
+        print('Activation h of layer: ', layer)
+        self.h.append(tf.nn.tanh(tf.matmul(self.h[layer-1], self.W[layer]) + self.b[layer]))
 
+    # output activation
+    self.z = tf.nn.softmax(tf.matmul(self.h[n_layer-1], self.W[n_layer]) + self.b[n_layer])
+
+    # labels
     self.z_ = tf.placeholder(shape=(None, self.n_out),dtype=tf.float64)
+
+    #loss
     self.cross_entropy = tf.reduce_mean(-tf.reduce_sum(self.z_ * tf.log(self.z), reduction_indices=[1]))
-
-
-
-  

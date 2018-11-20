@@ -1,5 +1,5 @@
 from ErrorCollector import ErrorCollector
-from BatchNormalizer import BatchNormalizer
+#from BatchNormalizer import BatchNormalizer
 from ClassifiedBatches import ClassifiedBatches
 from Trainer import Trainer
 from Model import Model
@@ -23,12 +23,12 @@ if __name__ == '__main__':
   print("one hot class: ", c_oh.shape)
 
   learning_rate = 0.001
-  model = Model(n_in=X.shape[1], n_hidden=X.shape[1], n_out=26)
+  model = Model(n_in=X.shape[1], n_hidden=100, n_out=26, n_layer=3)
 
   #bn = BatchNormalizer(X, C, batch_size=40, shuffle=False)
   #bn.getNormalizedClassBatches()
 
   batches = ClassifiedBatches(X, c_oh, X.shape[0])
   trainer = Trainer(model, batches, ec)
-  trainer.train(learning_rate, epochs=2)
+  trainer.train(learning_rate, epochs=10)
 
