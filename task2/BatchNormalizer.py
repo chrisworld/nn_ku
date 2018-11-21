@@ -6,38 +6,38 @@ class BatchNormalizer():
     self.examples = examples
     self.classes = classes
     self.batch_size = batch_size
-    self.batch_num = np.round(self.examples.shape[0]/batch_size)
+    self.batch_num = np.round(self.examples.shape[0]/batch_size)  #number of batches corresponding to batch_size
     self.shuffle = shuffle
-    self.batch_list = np.array_split(self.examples,self.batch_num)
-    self.batch_len = self.batch_list.__len__()
-    self.num_feat = self.examples.shape[1]
+
 
 
 
   def getMean(self):
-    mean_features = np.zeros((self.batch_len, self.num_feat))
-    for i in range(self.batch_len):
-      mean_features_temp = np.mean(self.batch_list[i], axis=0)
-      mean_features[i]  = mean_features_temp
+    mean_features = np.mean(self.examples, axis=0)
     print("mean_features shape: ", mean_features.shape)
+
+    self.mean_features = mean_features
     return mean_features
 
   def getStd(self):
-    std_features = np.zeros((self.batch_len, self.num_feat))
-    for i in range(self.batch_len):
-      std_features_temp = np.std(self.batch_list[i], axis=0)
-      std_features[i]  = std_features_temp
+    std_features = np.std(self.examples, axis=0)
     print("std_features shape: ", std_features.shape)
+    self.std_features = std_features
     return std_features
 
-  def getNormalizedClassBatches(self):
-    normalized = np.zeros((self.batch_len, self.num_feat))
-    mean_features = self.getMean() 
-    std_features = self.getStd()
-    for i range(self.batch_len):
-      normtemp
-      norm=(self.batch_list[0]-mean_features[0])/std_features[0]
+  def getNormalized(self):
+    norm=(self.examples-(self.mean_features))/(self.std_features)
+    print("normalized_data shape: ", norm.shape)
+    print("normalized_data mean: ", norm.mean(axis=0)[0])
+    print("normalized_data std: ", norm.std(axis=0)[0])
+    self.norm = norm
     return norm
+
+  def getBatches(self):
+    batch_list = np.array_split(self.norm,self.batch_num)
+    print("single batch shape: ", batch_list[0].shape)
+    return batch_list
+
 
     
     #print("feature_score shape: ", feature_score.shape)
