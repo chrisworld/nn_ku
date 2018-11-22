@@ -1,13 +1,15 @@
 import numpy as np
+import tensorflow as tf
 from ClassifiedBatches import ClassifiedBatches
 
 class BatchNormalizer():
-  def __init__(self, examples, classes=None, batch_size=40, shuffle=False):
+  def __init__(self, examples, classes=None, batch_size=40, shuffle=False,num_classes=26):
     self.examples = examples
     self.classes = classes
     self.batch_size = batch_size
     self.batch_num = np.round(self.examples.shape[0]/batch_size)  #number of batches corresponding to batch_size
     self.shuffle = shuffle
+    self.num_classes = num_classes
 
   def getMean(self):
     mean_features = np.mean(self.examples, axis=0)
@@ -31,9 +33,13 @@ class BatchNormalizer():
     return norm
 
   def getBatches(self):
+    c_oh = tf.one_hot(self.classes-1, self.num_classes)
+    with tf.Session() as sess:
+      self.classes_one_hot = sess.run(c_oh)
+
     cbatches = ClassifiedBatches(np.array_split(self.norm,self.batch_num),
-    np.array_split(self.classes, self.batch_num),batch_size = self.batch_size)
-    #batch_list = np.array_split(self.norm,self.batch_num)
+                                 np.array_split(self.classes_one_hot, self.batch_num),
+                                 batch_size = self.batch_size)
     print("single batch shape: ", cbatches.examples[0].shape)
     print("single class shape: ", cbatches.classes[0].shape)
     return cbatches
