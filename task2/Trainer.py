@@ -25,8 +25,10 @@ class Trainer():
 
     # run epochs
     for k in range(epochs):
-      # training step
-      sess.run(train_step, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
+      # gradient over each batch
+      for batch_example, batch_class in zip(self.batches.batch_examples, self.batches.batch_classes):
+        # training step
+        sess.run(train_step, feed_dict={self.model.x: batch_example, self.model.z_: batch_class})
       # Compute the errors over the whole dataset
       train_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
       # Compute the acc over the whole dataset

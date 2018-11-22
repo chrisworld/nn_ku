@@ -37,11 +37,9 @@ class BatchNormalizer():
     with tf.Session() as sess:
       self.classes_one_hot = sess.run(c_oh)
 
-    cbatches = ClassifiedBatches(np.array_split(self.norm,self.batch_num),
-                                 np.array_split(self.classes_one_hot, self.batch_num),
-                                 batch_size = self.batch_size)
-    print("single batch shape: ", cbatches.examples[0].shape)
-    print("single class shape: ", cbatches.classes[0].shape)
+    cbatches = ClassifiedBatches(self.norm, self.classes_one_hot, self.batch_size)
+    print("single batch shape: ", cbatches.batch_examples[0].shape)
+    print("single class shape: ", cbatches.batch_classes[0].shape)
     return cbatches
 
 
