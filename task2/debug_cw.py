@@ -45,8 +45,7 @@ if __name__ == '__main__':
 
 
   trainer = Trainer(model, train_batches, ec)
-  trainer.train(learning_rate, epochs=2)
-
-  #evaluator = Evaluator(model, test_batches, ec)
-  #evaluator.eval()
+  evaluator = trainer.train(learning_rate, epochs=2)
+  #evaluator.batches = training_batches
+  evaluator.eval()
 
