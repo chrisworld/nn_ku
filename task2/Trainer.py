@@ -11,8 +11,7 @@ class Trainer():
     self.error_collector = error_collector
 
   def train(self, learning_rate, epochs):
-    # setup logging 
-    logging.basicConfig(filename='logs/example.log',level=logging.INFO)
+    # logger info
     logging.info('\n \nTrainer Logger \n' + 'Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
 
     # setup training
@@ -39,16 +38,13 @@ class Trainer():
       self.error_collector.addTrainError(train_loss)
       self.error_collector.addTrainAcc(train_acc)
 
-      #  Implement Early Stopping
-      evaluator.eval(is_validation=True)
-
-
       # logging
       print("Iteration: ",k, " train loss: ",train_loss, "train acc: ", train_acc)
       logging.info("Iteration: " + str(k) + " train loss: " + str(train_loss) + " train acc: " + str(train_acc))
 
-    # print errors
-    self.error_collector.plotTrainTestError(self.model, self.batches.batch_size, learning_rate, epochs)
+      # Implement Early Stopping with evaluation of validation set
+      evaluator.eval(k, is_validation=True)
 
-    print("-----Training finished-----")
-    return evaluator
+    print("-----Training finished----- with best training loss: ", evaluator.best_loss)
+    logging.info("-----Training finished----- with best validation loss: " + str(evaluator.best_loss))
+    return evaluator.best_model

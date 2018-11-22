@@ -10,10 +10,8 @@ class Evaluator():
     self.best_loss = 0
     self.best_model = model
 
-  def eval(self, is_validation=False):
-    #logging.basicConfig(filename='logs/example.log',level=logging.INFO)
-    #logging.info('\n \nTrainer Logger \n' + 'Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
-  
+  def eval(self, it=None, is_validation=False):
+
     # evaluation
     correct_prediction = tf.equal(tf.argmax(self.model.z,1), tf.argmax(self.model.z_,1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float64))
@@ -34,8 +32,13 @@ class Evaluator():
       # calculate best loss
       # TODO
       if self.best_loss == 0 or test_loss < self.best_loss:
-        self.best_model = self.model
+        #saver = tf.train.Saver()
+        #save_path = saver.save(sess, "./tmp/model.ckpt")
+        #print("Model saved in path: %s" % save_path)
+
+        #self.best_model = self.model
         self.best_loss = test_loss
+        #print("TF Vars: ", tf.trainable_variables())
     
     # compute scores on test set 
     else:
@@ -43,12 +46,11 @@ class Evaluator():
       test_acc = sess.run(accuracy, feed_dict={self.best_model.x: self.batches.examples, self.best_model.z_: self.batches.classes})
 
     if is_validation:
-      print("val loss: ", test_loss, " val acc: ", test_acc)
-      logging.info("val loss: " + str(test_loss) + " val acc: " + str(test_acc))
+      print("Iteration: ", it, " valid loss: ", test_loss, " valid acc: ", test_acc)
+      logging.info("Iteration: " + str(it) + " val loss: " + str(test_loss) + " val acc: " + str(test_acc))
     else:
       print("test loss: ",test_loss, " test acc: ", test_acc)
-      print("best training loss: ", self.best_loss)
       logging.info("test loss: " + str(test_loss) + "test acc: " + str(test_acc))
-      logging.info("best training loss: " + str(self.best_loss))
+      #logging.info("best training loss: " + str(self.best_loss))
 
 

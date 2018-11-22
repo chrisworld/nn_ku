@@ -114,4 +114,5 @@ venv.bak/
 
 # my stuff
 #task2/plots
+task2/tmp
 task2/delete_me.py
