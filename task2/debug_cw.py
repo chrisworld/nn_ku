@@ -25,9 +25,10 @@ if __name__ == '__main__':
   print("X shape: ", X.shape[1])
 
   # Parameters and model
-  epochs = 5
+  epochs = 50
   learning_rate = 0.001
-  model = Model(n_in=X.shape[1], n_hidden=100, n_out=26, n_layer=1)
+  learning_rate = 0.5
+  model = Model(n_in=X.shape[1], n_hidden=300, n_out=26, n_layer=1)
   batch_size = 40
 
   # setup logging 
@@ -44,12 +45,14 @@ if __name__ == '__main__':
 
   # Training
   trainer = Trainer(model, train_batches, ec)
-  trained_model = trainer.train(learning_rate, epochs)
+  trainer.train(learning_rate, epochs)
 
   # print error plots
   ec.plotTrainTestError(model, batch_size, learning_rate, epochs)
+  ec.plotTrainTestAcc(model, batch_size, learning_rate, epochs)
 
   # Testing
-  evaluator = Evaluator(trained_model, test_batches, ec)
+  evaluator = Evaluator(model, test_batches)
+
   evaluator.eval()
 
