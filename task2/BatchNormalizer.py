@@ -9,9 +9,6 @@ class BatchNormalizer():
     self.batch_num = np.round(self.examples.shape[0]/batch_size)  #number of batches corresponding to batch_size
     self.shuffle = shuffle
 
-
-
-
   def getMean(self):
     mean_features = np.mean(self.examples, axis=0)
     print("mean_features shape: ", mean_features.shape)
@@ -34,9 +31,12 @@ class BatchNormalizer():
     return norm
 
   def getBatches(self):
-    batch_list = np.array_split(self.norm,self.batch_num)
-    print("single batch shape: ", batch_list[0].shape)
-    return batch_list
+    cbatches = ClassifiedBatches(np.array_split(self.norm,self.batch_num),
+    np.array_split(self.classes, self.batch_num),batch_size = self.batch_size)
+    #batch_list = np.array_split(self.norm,self.batch_num)
+    print("single batch shape: ", cbatches.examples[0].shape)
+    print("single class shape: ", cbatches.classes[0].shape)
+    return cbatches
 
 
     
