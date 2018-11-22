@@ -11,6 +11,16 @@ class BatchNormalizer():
     self.shuffle = shuffle
     self.num_classes = num_classes
 
+  def shuffle_in_unison(self):
+    assert len(self.examples) == len(self.classes)
+    shuffled_a = np.empty(self.examples.shape, dtype=self.examples.dtype)
+    shuffled_b = np.empty(self.classes.shape, dtype=self.classes.dtype)
+    permutation = np.random.permutation(len(self.examples))
+    for old_index, new_index in enumerate(permutation):
+      shuffled_a[new_index] = self.examples[old_index]
+      shuffled_b[new_index] = self.classes[old_index]
+    return shuffled_a, shuffled_b
+
   def getMean(self):
     mean_features = np.mean(self.examples, axis=0)
     print("mean_features shape: ", mean_features.shape)
@@ -25,6 +35,8 @@ class BatchNormalizer():
     return std_features
 
   def getNormalized(self):
+    if (self.shuffle==True):
+      self.examples, self.classes = self.shuffle_in_unison()
     norm=(self.examples-(self.mean_features))/(self.std_features)
     print("normalized_data shape: ", norm.shape)
     print("normalized_data mean: ", norm.mean(axis=0)[0])
