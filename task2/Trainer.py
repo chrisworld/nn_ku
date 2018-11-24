@@ -54,13 +54,16 @@ class Trainer():
 
         # Early stopping
         if self.best_loss == 0 or test_loss < self.best_loss:
+          #if k % 5 == 0:
           file_name = os.path.normpath('Param_ep-' + str(epochs) + '_hidu-' + str(self.model.n_hidden) + '_hidl-' + str(self.model.n_layer) + '_lr-' + str(learning_rate) + '.ckpt')
-          print("Model saved: %s" % self.save_path + file_name)
+          #print("---Model saved: %s" % self.save_path + file_name)
           save_path = saver.save(sess, self.save_path + file_name)
           self.best_loss = test_loss
 
         # logging
-        print("Iteration: ",k, " train loss: ",train_loss, "train acc: ", train_acc, " valid loss: ", test_loss, " valid acc: ", test_acc)
+        #print("%.2f" % a)
+
+        print("Iteration: ",k, " train loss: [%.4f]" % train_loss, "train acc: [%.4f]" % train_acc, " valid loss: [%.4f]" % test_loss, " valid acc: [%.4f]" % test_acc)
         logging.info("Iteration: " + str(k) + " train loss: " + str(train_loss) + " train acc: " + str(train_acc) + " val loss: " + str(test_loss) + " val acc: " + str(test_acc))
     
     # finish log

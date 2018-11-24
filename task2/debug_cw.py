@@ -25,10 +25,10 @@ if __name__ == '__main__':
   print("X shape: ", X.shape[1])
 
   # Parameters and model
-  epochs = 50
+  epochs = 6
   learning_rate = 0.001
   learning_rate = 0.5
-  model = Model(n_in=X.shape[1], n_hidden=300, n_out=26, n_layer=1)
+  model = Model(n_in=X.shape[1], n_hidden=100, n_out=26, n_layer=0)
   batch_size = 40
 
   # setup logging 
