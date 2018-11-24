@@ -43,18 +43,18 @@ class Trainer():
       # run epochs
       for k in range(epochs):
         # gradient over each batch
-        for batch_example, batch_class in zip(self.batches.batch_examples, self.batches.batch_classes):
+        for batch_example, batch_class in zip(self.batches.batch_examples_train, self.batches.batch_classes_train):
           # training step
           sess.run(train_step, feed_dict={self.model.x: batch_example, self.model.z_: batch_class})
         
         # Compute the errors and acc over the training dataset
-        train_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
-        train_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
+        train_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples_train, self.model.z_: self.batches.classes_train})
+        train_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples_train, self.model.z_: self.batches.classes_train})
         self.error_collector.addTrainError(train_loss)
         self.error_collector.addTrainAcc(train_acc)
         # Compute the errors and acc of the validation set
-        test_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
-        test_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
+        test_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
+        test_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
         self.error_collector.addTestError(test_loss)
         self.error_collector.addTestAcc(test_acc)
 

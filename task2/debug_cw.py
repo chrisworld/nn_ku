@@ -22,9 +22,9 @@ if __name__ == '__main__':
   #print("X shape: ", X.shape[1])
 
   # Parameters and model
-  epochs = 100
-  learning_rate = 0.001
-  learning_rate = 0.5
+  epochs = 50
+  #learning_rate = 0.001
+  learning_rate = 0.05
   model = Model(n_in=X.shape[1], n_hidden=100, n_out=26, n_layer=0)
   batch_size = 40
 
