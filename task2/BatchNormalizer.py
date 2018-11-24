@@ -3,13 +3,14 @@ import tensorflow as tf
 from ClassifiedBatches import ClassifiedBatches
 
 class BatchNormalizer():
-  def __init__(self, examples, classes=None, batch_size=40, shuffle=False,num_classes=26):
+  def __init__(self, examples, classes=None, batch_size=40, shuffle=False, num_classes=26, test=False):
     self.examples = examples
     self.classes = classes
     self.batch_size = batch_size
-    self.batch_num = np.round(self.examples.shape[0]/batch_size)  #number of batches corresponding to batch_size
+    #self.batch_num = np.round(self.examples.shape[0]/batch_size)  #number of batches corresponding to batch_size
     self.shuffle = shuffle
     self.num_classes = num_classes
+    self.test = test
 
   def shuffle_in_unison(self):
     assert len(self.examples) == len(self.classes)
@@ -48,10 +49,7 @@ class BatchNormalizer():
     c_oh = tf.one_hot(self.classes-1, self.num_classes)
     with tf.Session() as sess:
       self.classes_one_hot = sess.run(c_oh)
-
-    cbatches = ClassifiedBatches(self.norm, self.classes_one_hot, self.batch_size)
-    print("single batch shape: ", cbatches.batch_examples[0].shape)
-    print("single class shape: ", cbatches.batch_classes[0].shape)
+    cbatches = ClassifiedBatches(self.norm, self.classes_one_hot, self.batch_size, self.test)
     return cbatches
 
 
