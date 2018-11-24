@@ -14,13 +14,15 @@ class ClassifiedBatches():
     self.classes_train = classes
     self.classes_validation = classes
 
+    #TODO: train set examples number
+
     # init Arrays if test set
     if self.is_test_set == False:
       #split into validation and training set
-      self.examples_train = self.examples[0:120]
-      self.examples_validation = self.examples[120:]
-      self.classes_train = self.classes[0:120]
-      self.classes_validation = self.classes[120:]
+      self.examples_train = self.examples[0:1200]
+      self.examples_validation = self.examples[1200:]
+      self.classes_train = self.classes[0:1200]
+      self.classes_validation = self.classes[1200:]
 
     # Batch List
     # number of batches corresponding to batch_size

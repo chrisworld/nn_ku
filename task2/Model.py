@@ -14,6 +14,7 @@ class Model():
     self.b = []
     self.h = []
 
+    print('---Create Model--- ')
     # create list of weights and biases upon each layers
     for layer in range(n_layer + 1):
       # set connections upon layer

@@ -18,9 +18,7 @@ class Trainer():
 
     #self.save_path = os.path.normpath(join(os.getcwd(), path)) + '/tmp' 
 
-  def train(self, learning_rate, epochs):
-    # logger info
-    logging.info('\n \nTrainer Logger \n' + 'Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+  def train(self, learning_rate, epochs, early_stop_lim=1000):
     # save parameter file name
     self.file_name = 'Param_ep-' + str(epochs) + '_hidu-' + str(self.model.n_hidden) + '_hidl-' + str(self.model.n_layer) + '_lr-' + str(learning_rate) + '.ckpt'
     
@@ -34,9 +32,13 @@ class Trainer():
     # save variables
     saver = tf.train.Saver()
 
+    # logging infos
     print("-----Training-----")
+    print('Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
     logging.info("-----Training-----")
+    logging.info('Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
 
+    early_stop_counter = 0
     with tf.Session() as sess:
       sess.run(init)
 
@@ -58,17 +60,26 @@ class Trainer():
         self.error_collector.addTestError(test_loss)
         self.error_collector.addTestAcc(test_acc)
 
-        # Early stopping
+        # Early stopping, save best parameters
         if self.best_loss == 0 or test_loss < self.best_loss:
           #if k % 5 == 0:
           #print("---Model saved: %s" % self.save_path + self.file_name)
           saver.save(sess, self.save_path + self.file_name)
           self.best_loss = test_loss
+          early_stop_counter = 0
+        else:
+          early_stop_counter += 1
 
-        # logging
+        # stop the training if no improvement
+        if early_stop_counter > early_stop_lim: 
+          print("---end due to early stopping limit")
+          logging.info("---end due to early stopping limit")
+          break
+
+        # logging iterations
         print("Iteration: ",k, " train loss: [%.4f]" % train_loss, "train acc: [%.4f]" % train_acc, " valid loss: [%.4f]" % test_loss, " valid acc: [%.4f]" % test_acc)
-        logging.info("Iteration: " + str(k) + " train loss: " + str(train_loss) + " train acc: " + str(train_acc) + " val loss: " + str(test_loss) + " val acc: " + str(test_acc))
-    
+        logging.info("Iteration: %i" % k + " train loss: [%.4f]" % train_loss + "train acc: [%.4f]" % train_acc + " valid loss: [%.4f]" % test_loss + " valid acc: [%.4f]" % test_acc)
+        
     # finish log
     print("-----Training finished with best validation loss: ", self.best_loss)
     logging.info("-----Training finished with best validation loss: " + str(self.best_loss))
@@ -76,4 +87,7 @@ class Trainer():
   # returns the path of saved model
   def getSaveFilePath(self):
     return self.save_path + self.file_name
+
+  def resetBestScore(self):
+    self.best_loss = 0
 

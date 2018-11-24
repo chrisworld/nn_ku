@@ -24,7 +24,8 @@ class Evaluator():
       saver.restore(sess, self.save_path)
       test_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
       test_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
-      print("test loss: ",test_loss, " test acc: ", test_acc)
-      logging.info("test loss: " + str(test_loss) + "test acc: " + str(test_acc))
+      print("test loss: [%.6f]" % test_loss, " test acc: [%.6f]" % test_acc)
+      logging.info("test loss: [%.6f]" % test_loss + " test acc: [%.6f]" % test_acc)
 
+    return test_loss, test_acc
 

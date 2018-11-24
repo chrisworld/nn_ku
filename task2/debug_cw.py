@@ -7,9 +7,9 @@ from Model import Model
 
 from nn18_ex2_load import load_isolet
 
-import tensorflow as tf
 import numpy as np
 import logging
+import os
 
 
 if __name__ == '__main__':
@@ -25,15 +25,15 @@ if __name__ == '__main__':
   epochs = 50
   #learning_rate = 0.001
   learning_rate = 0.05
-  model = Model(n_in=X.shape[1], n_hidden=100, n_out=26, n_layer=0)
+  model = Model(n_in=X.shape[1], n_hidden=300, n_out=26, n_layer=1)
   batch_size = 40
 
   # setup logging 
-  log_file_name = 'logs/' + 'Log' + '_ep' + str(epochs) + '_hidu' + str(model.n_hidden) + '_hidl' + str(model.n_layer) + '_lr' + str(learning_rate) + '.log'
+  log_file_name = 'logs' + os.sep + 'Log' + '_ep' + str(epochs) + '_hidu' + str(model.n_hidden) + '_hidl' + str(model.n_layer) + '_lr' + str(learning_rate) + '.log'
   logging.basicConfig(filename=log_file_name, level=logging.INFO)
 
   # Batch Normalize
-  bn = BatchNormalizer(X, C, batch_size=batch_size, shuffle=False)
+  bn = BatchNormalizer(X, C, batch_size=batch_size, shuffle=True)
   bn.getMean()
   bn.getStd()
   bn.getNormalized()
@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
   # Training
   trainer = Trainer(model, train_batches, ec)
-  trainer.train(learning_rate, epochs)
+  trainer.train(learning_rate, epochs, early_stop_lim=25)
 
   # print error plots
   ec.plotTrainTestError(model, batch_size, learning_rate, epochs)
