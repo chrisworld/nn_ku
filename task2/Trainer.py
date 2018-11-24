@@ -14,13 +14,16 @@ class Trainer():
     self.best_loss = 0
     #self.save_path = os.path.realpath(__file__)
     self.save_path = os.path.dirname(os.path.abspath( __file__ )) +  os.sep + 'tmp' + os.sep
+    self.file_name = ""
 
     #self.save_path = os.path.normpath(join(os.getcwd(), path)) + '/tmp' 
 
   def train(self, learning_rate, epochs):
     # logger info
     logging.info('\n \nTrainer Logger \n' + 'Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
-
+    # save parameter file name
+    self.file_name = 'Param_ep-' + str(epochs) + '_hidu-' + str(self.model.n_hidden) + '_hidl-' + str(self.model.n_layer) + '_lr-' + str(learning_rate) + '.ckpt'
+    
     # setup training
     train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(self.model.cross_entropy)
     correct_prediction = tf.equal(tf.argmax(self.model.z,1), tf.argmax(self.model.z_,1))
@@ -30,6 +33,9 @@ class Trainer():
     init = tf.global_variables_initializer() 
     # save variables
     saver = tf.train.Saver()
+
+    print("-----Training-----")
+    logging.info("-----Training-----")
 
     with tf.Session() as sess:
       sess.run(init)
@@ -55,18 +61,19 @@ class Trainer():
         # Early stopping
         if self.best_loss == 0 or test_loss < self.best_loss:
           #if k % 5 == 0:
-          file_name = os.path.normpath('Param_ep-' + str(epochs) + '_hidu-' + str(self.model.n_hidden) + '_hidl-' + str(self.model.n_layer) + '_lr-' + str(learning_rate) + '.ckpt')
-          #print("---Model saved: %s" % self.save_path + file_name)
-          save_path = saver.save(sess, self.save_path + file_name)
+          #print("---Model saved: %s" % self.save_path + self.file_name)
+          saver.save(sess, self.save_path + self.file_name)
           self.best_loss = test_loss
 
         # logging
-        #print("%.2f" % a)
-
         print("Iteration: ",k, " train loss: [%.4f]" % train_loss, "train acc: [%.4f]" % train_acc, " valid loss: [%.4f]" % test_loss, " valid acc: [%.4f]" % test_acc)
         logging.info("Iteration: " + str(k) + " train loss: " + str(train_loss) + " train acc: " + str(train_acc) + " val loss: " + str(test_loss) + " val acc: " + str(test_acc))
     
     # finish log
     print("-----Training finished with best validation loss: ", self.best_loss)
     logging.info("-----Training finished with best validation loss: " + str(self.best_loss))
+
+  # returns the path of saved model
+  def getSaveFilePath(self):
+    return self.save_path + self.file_name
 

@@ -26,7 +26,7 @@ class ErrorCollector():
     self.test_acc_list.append(test_acc)
 
   def plotTrainTestError(self, model, batch_size, learning_rate, epochs):
-    print("Plot errors")
+    print("Plot Errors")
     fig, ax = plt.subplots(1)
     ax.plot(self.train_error_list, color='blue', label='training', lw=2)
     ax.plot(self.test_error_list, color='green', label='validation', lw=2)
@@ -42,7 +42,7 @@ class ErrorCollector():
     #plt.show()
 
   def plotTrainTestAcc(self, model, batch_size, learning_rate, epochs):
-    print("Plot Accuray")
+    print("Plot Accuracy")
     fig, ax = plt.subplots(1)
     ax.plot(self.train_acc_list, color='blue', label='training', lw=2)
     ax.plot(self.test_acc_list, color='green', label='validation', lw=2)

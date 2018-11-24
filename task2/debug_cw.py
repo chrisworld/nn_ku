@@ -17,15 +17,12 @@ if __name__ == '__main__':
   # training and validation error collector
   ec = ErrorCollector()
 
-  # BatchNormalizer
   X, C, X_tst, C_tst = load_isolet()
-  print("X shape: ", X.shape)
-  print("C shape: ", C.shape)
-  print("X shape: ", X.shape[0])
-  print("X shape: ", X.shape[1])
+  #print("X shape: ", X.shape[0])
+  #print("X shape: ", X.shape[1])
 
   # Parameters and model
-  epochs = 6
+  epochs = 100
   learning_rate = 0.001
   learning_rate = 0.5
   model = Model(n_in=X.shape[1], n_hidden=100, n_out=26, n_layer=0)
@@ -52,7 +49,6 @@ if __name__ == '__main__':
   ec.plotTrainTestAcc(model, batch_size, learning_rate, epochs)
 
   # Testing
-  evaluator = Evaluator(model, test_batches)
-
+  evaluator = Evaluator(model, test_batches, trainer.getSaveFilePath())
   evaluator.eval()
 
