@@ -18,22 +18,19 @@ if __name__ == '__main__':
   X, C, X_tst, C_tst = load_isolet()
 
   # Parameters and model
-  epochs = 2
+  epochs = 50
   #learning_rates = [0.001, 0.01, 0.1]
   learning_rates = [0.01, 0.1]
   #n_hidden = [150, 300, 600]
-  n_hidden = [100, 150]
-  n_layer = [0]
+  n_hidden = [150, 300]
+  n_layer = [0, 1, 2]
 
   batch_size = 40
 
   # Batch Normalize
   bn = BatchNormalizer(X, C, batch_size=batch_size, shuffle=True)
-  bn.getMean()
-  bn.getStd()
-  bn.getNormalized()
-  train_batches = bn.getBatches()
-  test_batches = bn.getBatches()
+  train_batches = bn.getBatches(X, C)
+  test_batches = bn.getBatches(X_tst, C_tst, test=True)
 
   model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer)
   model_tester.run(train_batches, test_batches)
