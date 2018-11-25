@@ -33,9 +33,9 @@ class BatchNormalizer():
     if (self.shuffle==True):
       examples, classes = self.shuffle_in_unison(examples,classes)
     norm=(examples-(self.mean_features))/(self.std_features)
-    print("normalized_data shape: ", norm.shape)
-    print("normalized_data mean: ", norm.mean(axis=0)[0])
-    print("normalized_data std: ", norm.std(axis=0)[0])
+    #print("normalized_data shape: ", norm.shape)
+    #print("normalized_data mean: ", norm.mean(axis=0)[0])
+    #print("normalized_data std: ", norm.std(axis=0)[0])
     return norm,classes
 
   def getBatches(self,examples,classes, test=False):
