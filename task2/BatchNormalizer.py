@@ -3,53 +3,47 @@ import tensorflow as tf
 from ClassifiedBatches import ClassifiedBatches
 
 class BatchNormalizer():
-  def __init__(self, examples, classes=None, batch_size=40, shuffle=False, num_classes=26, test=False):
+  def __init__(self, examples, classes=None, batch_size=40, shuffle=False, num_classes=26):
     self.examples = examples
     self.classes = classes
     self.batch_size = batch_size
     #self.batch_num = np.round(self.examples.shape[0]/batch_size)  #number of batches corresponding to batch_size
     self.shuffle = shuffle
     self.num_classes = num_classes
-    self.test = test
+    self.mean_features = np.mean(self.examples, axis=0)
+    self.std_features = np.std(self.examples, axis=0)
 
-  def shuffle_in_unison(self):
-    assert len(self.examples) == len(self.classes)
-    shuffled_a = np.empty(self.examples.shape, dtype=self.examples.dtype)
-    shuffled_b = np.empty(self.classes.shape, dtype=self.classes.dtype)
-    permutation = np.random.permutation(len(self.examples))
+  def shuffle_in_unison(self,examples,classes):
+    assert len(examples) == len(classes)
+    shuffled_a = np.empty(examples.shape, dtype=examples.dtype)
+    shuffled_b = np.empty(classes.shape, dtype=classes.dtype)
+    permutation = np.random.permutation(len(examples))
     for old_index, new_index in enumerate(permutation):
-      shuffled_a[new_index] = self.examples[old_index]
-      shuffled_b[new_index] = self.classes[old_index]
+      shuffled_a[new_index] = examples[old_index]
+      shuffled_b[new_index] = classes[old_index]
     return shuffled_a, shuffled_b
 
   def getMean(self):
-    mean_features = np.mean(self.examples, axis=0)
-    print("mean_features shape: ", mean_features.shape)
-
-    self.mean_features = mean_features
-    return mean_features
+    return self.mean_features
 
   def getStd(self):
-    std_features = np.std(self.examples, axis=0)
-    print("std_features shape: ", std_features.shape)
-    self.std_features = std_features
-    return std_features
+    return self.std_features
 
-  def getNormalized(self):
+  def getNormalized(self,examples, classes):
     if (self.shuffle==True):
-      self.examples, self.classes = self.shuffle_in_unison()
-    norm=(self.examples-(self.mean_features))/(self.std_features)
+      examples, classes = self.shuffle_in_unison(examples,classes)
+    norm=(examples-(self.mean_features))/(self.std_features)
     print("normalized_data shape: ", norm.shape)
     print("normalized_data mean: ", norm.mean(axis=0)[0])
     print("normalized_data std: ", norm.std(axis=0)[0])
-    self.norm = norm
-    return norm
+    return norm,classes
 
-  def getBatches(self):
-    c_oh = tf.one_hot(self.classes-1, self.num_classes)
+  def getBatches(self,examples,classes, test=False):
+    norm,norm_classes = self.getNormalized(examples,classes)
+    c_oh = tf.one_hot(norm_classes-1, self.num_classes)
     with tf.Session() as sess:
       self.classes_one_hot = sess.run(c_oh)
-    cbatches = ClassifiedBatches(self.norm, self.classes_one_hot, self.batch_size, self.test)
+    cbatches = ClassifiedBatches(norm, self.classes_one_hot, self.batch_size, test)
     return cbatches
 
 
