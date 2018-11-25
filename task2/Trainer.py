@@ -11,7 +11,9 @@ class Trainer():
     self.model = model
     self.batches = batches
     self.error_collector = error_collector
-    self.best_loss = 0
+    self.best_validation_loss = 0
+    self.best_validation_acc = 0
+    self.best_epoch = 0
     #self.save_path = os.path.realpath(__file__)
     self.save_path = os.path.dirname(os.path.abspath( __file__ )) +  os.sep + 'tmp' + os.sep
     self.file_name = ""
@@ -61,33 +63,41 @@ class Trainer():
         self.error_collector.addTestAcc(test_acc)
 
         # Early stopping, save best parameters
-        if self.best_loss == 0 or test_loss < self.best_loss:
-          #if k % 5 == 0:
-          #print("---Model saved: %s" % self.save_path + self.file_name)
-          saver.save(sess, self.save_path + self.file_name)
-          self.best_loss = test_loss
-          early_stop_counter = 0
-        else:
-          early_stop_counter += 1
+        if self.batches.is_validation == True:
+          if self.best_validation_loss == 0 or test_loss < self.best_validation_loss:
+            #print("---Model saved: %s" % self.save_path + self.file_name)
+            saver.save(sess, self.save_path + self.file_name)
+            self.best_validation_loss = test_loss
+            self.best_validation_acc = test_acc
+            self.best_epoch = k
+            early_stop_counter = 0
+          else:
+            early_stop_counter += 1
 
-        # stop the training if no improvement
-        if early_stop_counter > early_stop_lim: 
-          print("---end due to early stopping limit")
-          logging.info("---end due to early stopping limit")
-          break
+          # stop the training if no improvement
+          if early_stop_counter > early_stop_lim: 
+            print("---end due to early stopping limit")
+            logging.info("---end due to early stopping limit")
+            break
 
         # logging iterations
-        print("Iteration: ",k, " train loss: [%.4f]" % train_loss, "train acc: [%.4f]" % train_acc, " valid loss: [%.4f]" % test_loss, " valid acc: [%.4f]" % test_acc)
-        logging.info("Iteration: %i" % k + " train loss: [%.4f]" % train_loss + "train acc: [%.4f]" % train_acc + " valid loss: [%.4f]" % test_loss + " valid acc: [%.4f]" % test_acc)
-        
+        print("Iteration: ",k, " train loss: [%.4f]" % train_loss, " train acc: [%.4f]" % train_acc, " valid loss: [%.4f]" % test_loss, " valid acc: [%.4f]" % test_acc)
+        logging.info("Iteration: %i" % k + " train loss: [%.4f]" % train_loss + " train acc: [%.4f]" % train_acc + " valid loss: [%.4f]" % test_loss + " valid acc: [%.4f]" % test_acc)
+      
+      if self.batches.is_validation == False:
+        saver.save(sess, self.save_path + self.file_name)
+
+
     # finish log
-    print("-----Training finished with best validation loss: ", self.best_loss)
-    logging.info("-----Training finished with best validation loss: " + str(self.best_loss))
+    print("-----Training finished with best validation loss: [%.4f] validation acc: [%.4f] at epoch:[%i]" %(self.best_validation_loss, self.best_validation_acc, self.best_epoch) )
+    logging.info("-----Training finished with best validation loss: [%.4f] validation acc: [%.4f] at epoch:[%i]" %(self.best_validation_loss, self.best_validation_acc, self.best_epoch ) )
 
   # returns the path of saved model
   def getSaveFilePath(self):
     return self.save_path + self.file_name
 
   def resetBestScore(self):
-    self.best_loss = 0
+    self.best_validation_loss = 0
+    self.best_validation_acc = 0
+    self.best_epoch = 0
 

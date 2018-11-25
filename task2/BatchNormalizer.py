@@ -38,12 +38,12 @@ class BatchNormalizer():
     #print("normalized_data std: ", norm.std(axis=0)[0])
     return norm,classes
 
-  def getBatches(self,examples,classes, test=False):
+  def getBatches(self,examples,classes, test=False, is_validation=True):
     norm,norm_classes = self.getNormalized(examples,classes)
     c_oh = tf.one_hot(norm_classes-1, self.num_classes)
     with tf.Session() as sess:
       self.classes_one_hot = sess.run(c_oh)
-    cbatches = ClassifiedBatches(norm, self.classes_one_hot, self.batch_size, test)
+    cbatches = ClassifiedBatches(norm, self.classes_one_hot, self.batch_size, test, is_validation)
     return cbatches
 
 
