@@ -9,14 +9,13 @@ class ClassifiedBatches():
     self.is_test_set = is_test_set
     self.is_validation = is_validation
 
-    if self.is_test_set == True:
-        return
-
-    # Arrays
     self.examples_train = examples
     self.examples_validation = examples
     self.classes_train = classes
     self.classes_validation = classes
+
+    if self.is_test_set == True:
+        return
 
     # return if no validation set is needed
     if self.is_validation == False:
@@ -40,5 +39,5 @@ class ClassifiedBatches():
 
     # split all examples and classes
     self.batch_examples_train = np.array_split(self.examples_train, self.batch_num)
-    self.batch_classes_train = np.array_split(self.classes_train, self.batch_num) 
+    self.batch_classes_train = np.array_split(self.classes_train, self.batch_num)  
 
