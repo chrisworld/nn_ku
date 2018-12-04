@@ -27,7 +27,7 @@ if __name__ == '__main__':
   logging.basicConfig(filename=log_file_path + log_file_name, level=logging.INFO)
 
   # Parameters and model
-  epochs = 50
+  epochs = 2
   learning_rate = 0.01
   n_hidden = 40
   n_layer = 9
@@ -43,12 +43,13 @@ if __name__ == '__main__':
 
   #model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer)
   #model_tester.run(train_batches, test_batches)
+
   ec = ErrorCollector()
   model = ResNetModel(n_in=300, n_hidden=n_hidden, n_out=26, n_layer=9)
   trainer = Trainer(model, train_batches, ec)
   trainer.train(learning_rate, epochs)
-  ec.plotTrainTestError(model, train_batches.batch_size, learning_rate, epochs)
-  ec.plotTrainTestAcc(model, train_batches.batch_size, learning_rate, epochs)
+  ec.plotTrainTestError(model, train_batches.batch_size, learning_rate, epochs, activation='relu')
+  ec.plotTrainTestAcc(model, train_batches.batch_size, learning_rate, epochs, activation='relu')
   ec.resetErrors()
   evaluator = Evaluator(model, test_batches, trainer.getSaveFilePath())
   test_loss, test_acc  = evaluator.eval()

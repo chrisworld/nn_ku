@@ -8,7 +8,7 @@ import logging
 import os
 
 class ModelTester():
-  def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26):
+  def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26, activation='relu'):
     self.epochs = epochs
     self.learning_rates = learning_rates
     self.n_hidden = n_hidden
@@ -18,6 +18,7 @@ class ModelTester():
     self.n_out = n_out
     self.best_test_acc = 0
     self.best_model_param = "None"
+    self.activation = activation
 
   def run(self, train_batches, test_batches):
     # training and validation error collector
@@ -28,16 +29,17 @@ class ModelTester():
 
     for n_hidden in self.n_hidden:
       for n_layer in self.n_layer:
+        for activation in self.activation:
         # create models
-        self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer))
+          self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation=activation))
 
     for model in self.models:
       trainer = Trainer(model, train_batches, ec)
       for learning_rate in self.learning_rates:
         trainer.train(learning_rate, self.epochs, early_stop_lim=25)
         # print error plots
-        ec.plotTrainTestError(model, train_batches.batch_size, learning_rate, self.epochs)
-        ec.plotTrainTestAcc(model, train_batches.batch_size, learning_rate, self.epochs)
+        ec.plotTrainTestError(model, train_batches.batch_size, learning_rate, self.epochs, model.activation)
+        ec.plotTrainTestAcc(model, train_batches.batch_size, learning_rate, self.epochs, model.activation)
         ec.resetErrors()
         evaluator = Evaluator(model, test_batches, trainer.getSaveFilePath())
         test_loss, test_acc  = evaluator.eval()
