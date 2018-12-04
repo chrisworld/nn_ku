@@ -10,3 +10,9 @@ INFO:root:Iteration: 6 train loss: 3.3185932786240073train acc: 0.03879448541199
 INFO:root:Iteration: 7 train loss: 3.317699757121891train acc: 0.038954793202949665
 INFO:root:Iteration: 8 train loss: 3.3168073437719983train acc: 0.03927540878486695
 INFO:root:Iteration: 9 train loss: 3.3159160357188906train acc: 0.04007694773966015
+INFO:root:
+ 
+Trainer Logger 
+Epochs: 2, Hidden Units: 100, HiddenLayer: 1, LearningRate: 0.001
+INFO:root:Iteration: 0 train loss: 3.3633552185909585 train acc: 0.03574863738377685
+INFO:root:Iteration: 1 train loss: 3.362212964760355 train acc: 0.035908945174735495

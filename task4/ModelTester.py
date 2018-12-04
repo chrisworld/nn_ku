@@ -8,7 +8,7 @@ import logging
 import os
 
 class ModelTester():
-  def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26):
+  def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26, activation='relu'):
     self.epochs = epochs
     self.learning_rates = learning_rates
     self.n_hidden = n_hidden
@@ -18,6 +18,7 @@ class ModelTester():
     self.n_out = n_out
     self.best_test_acc = 0
     self.best_model_param = "None"
+    self.activation = activation
 
   def run(self, train_batches, test_batches):
     # training and validation error collector
@@ -29,7 +30,7 @@ class ModelTester():
     for n_hidden in self.n_hidden:
       for n_layer in self.n_layer:
         # create models
-        self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer))
+        self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation=self.activation))
 
     for model in self.models:
       trainer = Trainer(model, train_batches, ec)

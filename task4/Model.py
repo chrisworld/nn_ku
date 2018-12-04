@@ -3,11 +3,12 @@ import numpy as np
 import numpy.random as rd
 
 class Model():
-  def __init__(self, n_in, n_hidden, n_out, n_layer=1):
+  def __init__(self, n_in, n_hidden, n_out, n_layer=1, activation='relu'):
     self.n_in = n_in
     self.n_hidden = n_hidden
     self.n_out = n_out
     self.n_layer = n_layer
+    self.activation = activation
 
     # Weights, biases and activations
     self.W = []
@@ -40,13 +41,20 @@ class Model():
     self.x = tf.placeholder(shape=(None, self.n_in),dtype=tf.float64)
     # connections and activation of hidden layer
     for layer in range(n_layer):
-      if layer == 0:
-        print('Activation h of layer: ', layer)
-        self.h.append(tf.nn.tanh(tf.matmul(self.x, self.W[0]) + self.b[0]))
-      else:
-        print('Activation h of layer: ', layer)
-        self.h.append(tf.nn.tanh(tf.matmul(self.h[layer-1], self.W[layer]) + self.b[layer]))
-
+      if self.activation == 'tanh':
+        if layer == 0:
+          print('Activation function of layer: ', layer, 'is', self.activation)
+          self.h.append(tf.nn.tanh(tf.matmul(self.x, self.W[0]) + self.b[0]))
+        else:
+          print('Activation function of layer: ', layer, 'is', self.activation)
+          self.h.append(tf.nn.tanh(tf.matmul(self.h[layer-1], self.W[layer]) + self.b[layer]))
+      elif self.activation == 'relu':
+        if layer == 0:
+          print('Activation function of layer: ', layer, 'is', self.activation)
+          self.h.append(tf.nn.relu(tf.matmul(self.x, self.W[0]) + self.b[0]))
+        else:
+          print('Activation function of layer: ', layer, 'is', self.activation)
+          self.h.append(tf.nn.relu(tf.matmul(self.h[layer - 1], self.W[layer]) + self.b[layer]))
     # output activation
     if n_layer == 0:
       self.z = tf.nn.softmax(tf.matmul(self.x, self.W[n_layer]) + self.b[n_layer])
