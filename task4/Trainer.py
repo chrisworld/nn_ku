@@ -18,7 +18,7 @@ class Trainer():
     self.save_path = os.path.dirname(os.path.abspath( __file__ )) +  os.sep + 'tmp' + os.sep
     self.file_name = ""
 
-  def train(self, learning_rate, epochs, adam_optimizer=True, early_stopping=False, early_stop_lim=1000):
+  def train(self, learning_rate, epochs, adam_optimizer=True, early_stopping=True, early_stop_lim=1000):
     # save parameter file name
     self.file_name = 'Param_ep-' + str(epochs) + '_hidu-' + str(self.model.n_hidden) + '_hidl-' + str(self.model.n_layer) + '_lr-' + str(learning_rate) + '.ckpt'
     
@@ -40,9 +40,9 @@ class Trainer():
 
     # logging infos
     print("-----Training-----")
-    print('Optimizer: ' + optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    print('Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation +  ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
     logging.info("-----Training-----")
-    logging.info('Optimizer: ' + optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    logging.info('Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
 
     early_stop_counter = 0
     with tf.Session() as sess:
@@ -67,7 +67,7 @@ class Trainer():
         self.error_collector.addTestAcc(test_acc)
 
         # Early stopping, save best parameters
-        if self.batches.is_validation == True and early_stopping == True:
+        if self.batches.is_validation == True and early_stopping == False:
           #if self.best_validation_loss == 0 or test_loss < self.best_validation_loss:
           if self.best_validation_acc == 100 or test_acc > self.best_validation_acc:
             #print("---Model saved: %s" % self.save_path + self.file_name)
