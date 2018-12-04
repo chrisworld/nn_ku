@@ -26,10 +26,11 @@ if __name__ == '__main__':
   logging.basicConfig(filename=log_file_path + log_file_name, level=logging.INFO)
 
   # Parameters and model
-  epochs = 3
-  learning_rates = [0.0001]
+  epochs = 100
+  learning_rates = [1e-5,3e-5,5e-5,7e-5]
   n_hidden = [40] # number of hidden units within layer
   n_layer = [9]   # number of hidden layers
+  activation = ['relu', 'tanh']
   batch_size = 20
 
   # Batch Normalizer
@@ -40,7 +41,7 @@ if __name__ == '__main__':
   train_batches.examples_validation = test_batches.examples_validation
   train_batches.classes_validation = test_batches.classes_validation
 
-  model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer, activation='relu')
+  model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer, activation=activation)
   model_tester.run(train_batches, test_batches)
 
   # run best model at best epoch with whole training set and use test set as validation

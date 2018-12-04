@@ -40,9 +40,9 @@ class Trainer():
 
     # logging infos
     print("-----Training-----")
-    print('Optimizer: ' + optimizer_name + 'Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    print('Optimizer: ' + optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
     logging.info("-----Training-----")
-    logging.info('Optimizer: ' + optimizer_name + 'Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    logging.info('Optimizer: ' + optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
 
     early_stop_counter = 0
     with tf.Session() as sess:

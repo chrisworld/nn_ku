@@ -29,16 +29,17 @@ class ModelTester():
 
     for n_hidden in self.n_hidden:
       for n_layer in self.n_layer:
+        for activation in self.activation:
         # create models
-        self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation=self.activation))
+          self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation=activation))
 
     for model in self.models:
       trainer = Trainer(model, train_batches, ec)
       for learning_rate in self.learning_rates:
         trainer.train(learning_rate, self.epochs, early_stop_lim=25)
         # print error plots
-        ec.plotTrainTestError(model, train_batches.batch_size, learning_rate, self.epochs)
-        ec.plotTrainTestAcc(model, train_batches.batch_size, learning_rate, self.epochs)
+        ec.plotTrainTestError(model, train_batches.batch_size, learning_rate, self.epochs, model.activation)
+        ec.plotTrainTestAcc(model, train_batches.batch_size, learning_rate, self.epochs, model.activation)
         ec.resetErrors()
         evaluator = Evaluator(model, test_batches, trainer.getSaveFilePath())
         test_loss, test_acc  = evaluator.eval()
