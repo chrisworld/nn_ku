@@ -26,7 +26,7 @@ class ErrorCollector():
   def addTestAcc(self, test_acc):
     self.test_acc_list.append(1-test_acc)
 
-  def plotTrainTestError(self, model, batch_size, learning_rate, epochs, activation):
+  def plotTrainTestError(self, model, batch_size, learning_rate, epochs, activation='relu'):
     print("Plot Errors")
     fig, ax = plt.subplots(1)
     ax.plot(self.train_error_list, color='blue', label='training', lw=2)
@@ -45,7 +45,7 @@ class ErrorCollector():
     plt.savefig(save_path + save_name, dpi=150, bbox_inches='tight')
     #plt.show()
 
-  def plotTrainTestAcc(self, model, batch_size, learning_rate, epochs,activation):
+  def plotTrainTestAcc(self, model, batch_size, learning_rate, epochs,activation='relu'):
     print("Plot Misclassification")
     fig, ax = plt.subplots(1)
     ax.plot(self.train_acc_list, color='blue', label='training', lw=2)
