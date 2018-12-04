@@ -27,35 +27,29 @@ if __name__ == '__main__':
 
   # Parameters and model
   epochs = 10
-  #learning_rates = [0.01]
   learning_rates = [0.01]
-  #n_hidden = [150, 300, 600]
   n_hidden = [150]
-  #n_layer = [0, 1, 2]
-  n_layer = [0, 1]
+  n_layer = [1]
 
-  batch_size = 40
+  batch_size = 20
 
   # Batch Normalizer
   bn = BatchNormalizer(X, C, batch_size=batch_size, shuffle=True)
   train_batches = bn.getBatches(X, C)
   test_batches = bn.getBatches(X_tst, C_tst, test=True)
-
-  model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer)
-  model_tester.run(train_batches, test_batches)
-
-  # run best model at best epoch with whole training set and use test set as validation
-  epochs = 10
-  learning_rates = [0.01]
-  n_hidden = [150]
-  n_layer = [1]
-
-  train_batches = bn.getBatches(X, C, is_validation=False)
-
   # use Test set as Validation
   train_batches.examples_validation = test_batches.examples_validation
   train_batches.classes_validation = test_batches.classes_validation
 
   model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer)
   model_tester.run(train_batches, test_batches)
+
+  # run best model at best epoch with whole training set and use test set as validation
+  #epochs = 10
+  #learning_rates = [0.01]
+  #n_hidden = [150]
+  #n_layer = [1]
+  #train_batches = bn.getBatches(X, C, is_validation=False)
+  #model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer)
+  #model_tester.run(train_batches, test_batches)
 
