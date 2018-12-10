@@ -8,6 +8,7 @@ from ResNetModel import ResNetModel
 import logging
 import os
 
+# Model Tester class
 class ModelTester():
   def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26, activation='relu', is_res_net = False):
     self.epochs = epochs

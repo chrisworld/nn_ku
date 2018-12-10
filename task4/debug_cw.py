@@ -27,11 +27,12 @@ if __name__ == '__main__':
   logging.basicConfig(filename=log_file_path + log_file_name, level=logging.INFO)
 
   # Parameters and model
-  epochs = 2
-  learning_rate = [1e-3]
+  epochs = 200
+  learning_rate = [1e-5, 3e-5, 6e-5]
   n_hidden = [40] # number of hidden units within layer
   n_layer = [9]   # number of hidden layers
-  activation = ['relu', 'tanh']
+  #activation = ['relu', 'tanh']
+  activation = ['relu']
   batch_size = 20
 
   # Batch Normalizer
@@ -42,12 +43,12 @@ if __name__ == '__main__':
   train_batches.examples_validation = test_batches.examples_validation
   train_batches.classes_validation = test_batches.classes_validation
 
-  model_tester = ModelTester(epochs, learning_rate, n_hidden, n_layer, activation=activation, is_res_net = False)
-  model_tester.run(train_batches, test_batches)
+  #model_tester = ModelTester(epochs, learning_rate, n_hidden, n_layer, activation=activation, is_res_net = False)
+  #model_tester.run(train_batches, test_batches)
 
   resnet_tester = ModelTester(epochs, learning_rate, n_hidden, n_layer, activation=activation, is_res_net = True)
   # get the best from the other model tester
-  resnet_tester.best_test_acc = model_tester.best_test_acc
-  resnet_tester.best_model_param = model_tester.best_model_param
+  #resnet_tester.best_test_acc = model_tester.best_test_acc
+  #resnet_tester.best_model_param = model_tester.best_model_param
   resnet_tester.run(train_batches, test_batches)
 

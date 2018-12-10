@@ -4,8 +4,7 @@ import logging
 import os
 
 
-from Evaluator import Evaluator
-
+# Trainer class
 class Trainer():
   def __init__(self, model, batches, error_collector):
     self.model = model

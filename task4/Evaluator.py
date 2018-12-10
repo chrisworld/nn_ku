@@ -1,6 +1,7 @@
 import tensorflow as tf
 import logging
 
+# Evaluator class
 class Evaluator():
   def __init__(self, model, batches, save_path):
     self.model = model

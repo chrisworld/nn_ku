@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import numpy.random as rd
 
+# ResNetModel
 class ResNetModel():
   def __init__(self, n_in, n_hidden, n_out, n_layer=1, activation='relu'):
     self.name = 'ResNet_Model'
