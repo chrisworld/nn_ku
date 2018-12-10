@@ -26,7 +26,7 @@ class ResNetModel():
 
     if self.n_resnet_blocks != 0:
       # create resnet blocks
-      for block in range(self.n_resnet_blocks + 1):
+      for block in range(self.n_resnet_blocks):
         print('ResNet W/b  at Block: ', block)
         self.W.append(tf.Variable(rd.randn(self.n_hidden, self.n_hidden) / np.sqrt(self.n_hidden), trainable=True))
         self.b.append(tf.Variable(np.zeros(self.n_hidden), trainable=True))
@@ -46,7 +46,7 @@ class ResNetModel():
 
     # create resnet blocks
     if self.n_resnet_blocks != 0:
-      for block in range(self.n_resnet_blocks + 1):
+      for block in range(self.n_resnet_blocks):
         print('Activations of block: ', block)
         print('--activation at layer: ', layer)
         self.h.append(tf.nn.relu(tf.matmul(self.h[layer-1], self.W[layer]) + self.b[layer]))
