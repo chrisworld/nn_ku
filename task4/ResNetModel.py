@@ -3,13 +3,14 @@ import numpy as np
 import numpy.random as rd
 
 class ResNetModel():
-  def __init__(self, n_in, n_hidden, n_out, n_layer=1):
+  def __init__(self, n_in, n_hidden, n_out, n_layer=1, activation='relu'):
     self.n_in = n_in
     self.n_hidden = n_hidden
     self.n_out = n_out
     self.n_layer = n_layer 
     self.n_resnet_blocks = int(n_layer/2)
-
+    self.activation = activation
+    
     # Weights, biases and activations
     self.W = []
     self.b = []
