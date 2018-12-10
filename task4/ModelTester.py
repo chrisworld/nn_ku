@@ -3,12 +3,13 @@ from ClassifiedBatches import ClassifiedBatches
 from Trainer import Trainer
 from Evaluator import Evaluator
 from Model import Model
+from ResNetModel import ResNetModel
 
 import logging
 import os
 
 class ModelTester():
-  def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26, activation='relu'):
+  def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26, activation='relu', is_res_net = False):
     self.epochs = epochs
     self.learning_rates = learning_rates
     self.n_hidden = n_hidden
@@ -19,6 +20,7 @@ class ModelTester():
     self.best_test_acc = 0
     self.best_model_param = "None"
     self.activation = activation
+    self.is_res_net = is_res_net
 
   def run(self, train_batches, test_batches):
     # training and validation error collector
@@ -32,7 +34,8 @@ class ModelTester():
         for activation in self.activation:
         # create models
           self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation=activation))
-
+    if self.is_res_net:
+      self.models.append(ResNetModel(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation='relu'))
     for model in self.models:
       trainer = Trainer(model, train_batches, ec)
       for learning_rate in self.learning_rates:

@@ -10,7 +10,7 @@ class ResNetModel():
     self.n_layer = n_layer 
     self.n_resnet_blocks = int(n_layer/2)
     self.activation = activation
-    
+
     # Weights, biases and activations
     self.W = []
     self.b = []
@@ -27,7 +27,7 @@ class ResNetModel():
       # create resnet blocks
       for block in range(self.n_resnet_blocks + 1):
         print('ResNet W/b  at Block: ', block)
-        self.W.append(tf.Variable(rd.randn(self.n_hidden, self.n_hidden) / np.sqrt(self.n_in), trainable=True))
+        self.W.append(tf.Variable(rd.randn(self.n_hidden, self.n_hidden) / np.sqrt(self.n_hidden), trainable=True))
         self.b.append(tf.Variable(np.zeros(self.n_hidden), trainable=True))
         self.W.append(tf.Variable(rd.randn(self.n_hidden, self.n_hidden) / np.sqrt(self.n_hidden), trainable=True))
         self.b.append(tf.Variable(np.zeros(self.n_hidden), trainable=True))
