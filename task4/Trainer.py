@@ -67,7 +67,7 @@ class Trainer():
         self.error_collector.addTestAcc(test_acc)
 
         # Early stopping, save best parameters
-        if self.batches.is_validation == True and early_stopping == False:
+        if self.batches.is_validation == True and early_stopping == True:
           #if self.best_validation_loss == 0 or test_loss < self.best_validation_loss:
           if self.best_validation_acc == 100 or test_acc > self.best_validation_acc:
             #print("---Model saved: %s" % self.save_path + self.file_name)
