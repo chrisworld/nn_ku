@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
   # Parameters and model
   epochs = 2
-  learning_rate = [1-2, 1e-3, 1e-4]
+  learning_rate = [1e-3]
   n_hidden = [40] # number of hidden units within layer
   n_layer = [9]   # number of hidden layers
   activation = ['relu', 'tanh']
@@ -46,5 +46,8 @@ if __name__ == '__main__':
   model_tester.run(train_batches, test_batches)
 
   resnet_tester = ModelTester(epochs, learning_rate, n_hidden, n_layer, activation=activation, is_res_net = True)
+  # get the best from the other model tester
+  resnet_tester.best_test_acc = model_tester.best_test_acc
+  resnet_tester.best_model_param = model_tester.best_model_param
   resnet_tester.run(train_batches, test_batches)
 

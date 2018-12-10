@@ -67,3 +67,4 @@ class Model():
 
     #loss
     self.cross_entropy = tf.reduce_mean(-tf.reduce_sum(self.z_ * tf.log(self.z), reduction_indices=[1]))
+    #self.cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits = self.z, labels = self.z_)) 
