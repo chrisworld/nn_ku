@@ -18,9 +18,9 @@ class Trainer():
     self.save_path = os.path.dirname(os.path.abspath( __file__ )) +  os.sep + 'tmp' + os.sep
     self.file_name = ""
 
-  def train(self, learning_rate, epochs, adam_optimizer=True, early_stopping=True, early_stop_lim=1000):
+  def train(self, learning_rate, epochs, adam_optimizer=True, early_stopping=False, early_stop_lim=1000):
     # save parameter file name
-    self.file_name = 'Param_ep-' + str(epochs) + '_hidu-' + str(self.model.n_hidden) + '_hidl-' + str(self.model.n_layer) + '_lr-' + str(learning_rate) + '.ckpt'
+    self.file_name = 'Param_' + self.model.name + '_ep-' + str(epochs) + '_hidu-' + str(self.model.n_hidden) + '_hidl-' + str(self.model.n_layer) + '_lr-' + str(learning_rate) + '.ckpt'
     
     # setup training
     if adam_optimizer == True:
@@ -40,9 +40,9 @@ class Trainer():
 
     # logging infos
     print("-----Training-----")
-    print('Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation +  ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    print('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation +  ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
     logging.info("-----Training-----")
-    logging.info('Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    logging.info('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
 
     early_stop_counter = 0
     with tf.Session() as sess:

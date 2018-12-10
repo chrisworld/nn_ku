@@ -4,6 +4,7 @@ import numpy.random as rd
 
 class ResNetModel():
   def __init__(self, n_in, n_hidden, n_out, n_layer=1, activation='relu'):
+    self.name = 'ResNet_Model'
     self.n_in = n_in
     self.n_hidden = n_hidden
     self.n_out = n_out

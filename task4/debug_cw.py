@@ -27,8 +27,8 @@ if __name__ == '__main__':
   logging.basicConfig(filename=log_file_path + log_file_name, level=logging.INFO)
 
   # Parameters and model
-  epochs = 2
-  learning_rate = 0.01
+  epochs = 100
+  learning_rate = 5e-5
   n_hidden = 40
   n_layer = 9
   batch_size = 20
