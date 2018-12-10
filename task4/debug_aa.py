@@ -3,6 +3,7 @@ from BatchNormalizer import BatchNormalizer
 from ClassifiedBatches import ClassifiedBatches
 from Trainer import Trainer
 from Evaluator import Evaluator
+from ResNetModel import ResNetModel
 from Model import Model
 from ModelTester import ModelTester
 
@@ -26,8 +27,8 @@ if __name__ == '__main__':
   logging.basicConfig(filename=log_file_path + log_file_name, level=logging.INFO)
 
   # Parameters and model
-  epochs = 80
-  learning_rates = [9e-5]#,11e-5,13e-5,15e-5]
+  epochs = 100
+  learning_rate = [9e-5,11e-5,13e-5,15e-5]
   n_hidden = [40] # number of hidden units within layer
   n_layer = [9]   # number of hidden layers
   activation = ['relu', 'tanh']
@@ -41,15 +42,8 @@ if __name__ == '__main__':
   train_batches.examples_validation = test_batches.examples_validation
   train_batches.classes_validation = test_batches.classes_validation
 
-  model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer, activation=activation)
+  model_tester = ModelTester(epochs, learning_rate, n_hidden, n_layer, activation=activation, is_res_net = False)
   model_tester.run(train_batches, test_batches)
 
-  # run best model at best epoch with whole training set and use test set as validation
-  #epochs = 10
-  #learning_rates = [0.01]
-  #n_hidden = [150]
-  #n_layer = [1]
-  #train_batches = bn.getBatches(X, C, is_validation=False)
-  #model_tester = ModelTester(epochs, learning_rates, n_hidden, n_layer)
-  #model_tester.run(train_batches, test_batches)
+
 
