@@ -31,11 +31,14 @@ class ModelTester():
 
     for n_hidden in self.n_hidden:
       for n_layer in self.n_layer:
-        for activation in self.activation:
-        # create models
-          self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation=activation))
-    if self.is_res_net:
-      self.models.append(ResNetModel(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation='relu'))
+        if self.is_res_net:
+          self.models.append(ResNetModel(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation='relu'))
+        else:
+          for activation in self.activation:
+            # create models
+            self.models.append(Model(n_in=self.n_in, n_hidden=n_hidden, n_out=self.n_out, n_layer=n_layer, activation=activation))
+          
+    
     for model in self.models:
       trainer = Trainer(model, train_batches, ec)
       for learning_rate in self.learning_rates:
