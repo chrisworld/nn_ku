@@ -2,14 +2,13 @@ from ErrorCollector import ErrorCollector
 from ClassifiedBatches import ClassifiedBatches
 from Trainer import Trainer
 from Evaluator import Evaluator
-from Model import Model
-from ResNetModel import ResNetModel
+from RnnModel import RnnModel
 
 import logging
 import os
 
 # Model Tester class
-class ModelTester():
+class RnnModelTester():
   def __init__(self, epochs, learning_rates, n_hidden, n_layer, n_in=300, n_out=26, activation='relu', is_res_net = False):
     self.epochs = epochs
     self.learning_rates = learning_rates
