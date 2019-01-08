@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-# Classify delayed XOR in a {0,1} string, in input strings of fixed length
+# Classify delayed XOR in a {0,1} string, in input strings of VARIABLE length
 
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
+import random
 
 from data_generator import generate_data
 
@@ -14,7 +15,7 @@ tf.reset_default_graph()  # for iPython convenience
 # parameters
 
 sequence_length = 20
-num_train, num_valid, num_test = 2000, 2000, 2000
+num_train, num_valid, num_test = 2000, 500, 500
 
 #cell_type = 'simple'
 #cell_type = 'gru'
@@ -29,13 +30,36 @@ max_epoch = 100
 
 # Generate delayed XOR samples
 X_train, y_train = generate_data(num_train, sequence_length)
+sl_train = sequence_length * np.ones(num_train) # NEW
+
 X_valid, y_valid = generate_data(num_valid, sequence_length)
+sl_valid = sequence_length * np.ones(num_valid) # NEW
+
 X_test, y_test = generate_data(num_test, sequence_length)
+sl_test = sequence_length * np.ones(num_test) # NEW
+
+# Crop data
+# Artificially define variable sequence lengths
+# for demo-purposes
+for i in range(num_train):
+    ll = 10+random.randint(0,sequence_length-10)
+    sl_train[i] = ll
+
+for i in range(num_valid):
+    ll = 10+random.randint(0,sequence_length-10)
+    sl_valid[i] = ll
+
+for i in range(num_test):
+    ll = 10+random.randint(0,sequence_length-10)
+    sl_test[i] = ll
+
+# placeholder for the sequence length of the examples
+seq_length = tf.placeholder(tf.int32, [None])
 
 # input tensor shape: number of examples, input length, dimensionality of each input
 # at every time step, one bit is shown to the network
 X = tf.placeholder(tf.float32, [None, sequence_length, 1])
-X = tf.placeholder(tf.float)
+
 # output tensor shape: number of examples, dimensionality of each output
 # Binary output at end of sequence
 y = tf.placeholder(tf.float32, [None, 1])
@@ -56,7 +80,7 @@ else:
 
 
 # only use outputs, ignore states
-outputs, states = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
+outputs, states = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32, sequence_length=seq_length) # NEW
 # tf.nn.dynamic_rnn(cell, inputs, ...)
 # Creates a recurrent neural network specified by RNNCell cell.
 # Performs fully dynamic unrolling of inputs.
@@ -89,6 +113,7 @@ sess.run(tf.global_variables_initializer())
 num_batches = int(X_train.shape[0] / batch_size)
 X_train_batches = np.array_split(X_train, num_batches)
 y_train_batches = np.array_split(y_train, num_batches)
+sl_train_batches = np.array_split(sl_train, num_batches)
 
 # train
 
@@ -98,11 +123,11 @@ error_valid_ = []
 for n in range(max_epoch):
     print('training epoch {0:d}'.format(n+1))
 
-    for X_train_cur, y_train_cur in zip(X_train_batches, y_train_batches):
-        sess.run(train_step, feed_dict={X: X_train_cur, y: y_train_cur})
-
-    error_train = sess.run(error, {X: X_train, y: y_train})
-    error_valid = sess.run(error, {X: X_valid, y: y_valid})
+    for X_train_cur, y_train_cur, sl_train_cur in zip(X_train_batches, y_train_batches, sl_train_batches):
+        sess.run(train_step, feed_dict={X: X_train_cur, y: y_train_cur, seq_length: sl_train_cur})
+        # We also need to feed the current sequence length
+    error_train = sess.run(error, {X: X_train, y: y_train, seq_length: sl_train})
+    error_valid = sess.run(error, {X: X_valid, y: y_valid, seq_length: sl_valid})
 
     print('  train:{0:.3g}, valid:{1:.3g}'.format(error_train, error_valid))
 
@@ -112,7 +137,7 @@ for n in range(max_epoch):
     if error_train == 0:
         break
 
-error_test = sess.run(error, {X: X_test, y: y_test})
+error_test = sess.run(error, {X: X_test, y: y_test, seq_length: sl_test})
 print('-'*70)
 print('test error after epoch {0:d}: {1:.3f}'.format(n+1, error_test))
 
