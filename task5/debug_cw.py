@@ -34,9 +34,13 @@ if __name__ == '__main__':
   n_validation_samples = 500
   n_test_samples = 500
 
-  for n in range(10):
+  for n in range(5):
     reber = make_embedded_reber()
-    print('Reber String: ' + reber)
+    reber_one_hot = str_to_vec(reber)
+    reber_next = str_to_next_embed(reber)
+    print('\n\nReber String: ' + reber + 
+      '\none hot: \n' + str(reber_one_hot) + 
+      '\nnext : \n' + str(reber_next))
  
   #train_batches = bn.getBatches(X, C)
   #test_batches = bn.getBatches(X_tst, C_tst, test=True)
