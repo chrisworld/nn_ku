@@ -1,5 +1,5 @@
 from ErrorCollector import ErrorCollector
-from ClassifiedBatches import ClassifiedBatches
+from ReberBatches import ReberBatches
 from Trainer import Trainer
 from Evaluator import Evaluator
 from RnnModelTester import RnnModelTester
@@ -27,21 +27,20 @@ if __name__ == '__main__':
   n_hidden = [40] # number of hidden units within layer
   n_layer = [1]   # number of hidden layers
   rnn_unit = ['simple', 'lstm', 'gru']
-  batch_size = 20
 
   # Get Grammar data
-  n_training_samples = 5000
-  n_validation_samples = 500
-  n_test_samples = 500
+  batch_size = 1
+  #n_train_samples = 5000
+  #n_val_samples = 500
+  #n_test_samples = 500
 
-  for n in range(5):
-    reber = make_embedded_reber()
-    reber_one_hot = str_to_vec(reber)
-    reber_next = str_to_next_embed(reber)
-    print('\n\nReber String: ' + reber + 
-      '\none hot: \n' + str(reber_one_hot) + 
-      '\nnext : \n' + str(reber_next))
- 
+  n_train_samples = 5
+  n_val_samples = 1
+  n_test_samples = 1
+
+  reber_batches = ReberBatches(n_train_samples, n_val_samples, n_test_samples, batch_size)
+  print (reber_batches.batch_examples_train)
+
   #train_batches = bn.getBatches(X, C)
   #test_batches = bn.getBatches(X_tst, C_tst, test=True)
 
