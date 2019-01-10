@@ -26,7 +26,7 @@ class ErrorCollector():
   def addTestAcc(self, test_acc):
     self.test_acc_list.append(1-test_acc)
 
-  def plotTrainTestError(self, model, batch_size, learning_rate, epochs, activation='relu'):
+  def plotTrainTestError(self, model, batch_size, learning_rate, epochs):
     print("Plot Errors")
     fig, ax = plt.subplots(1)
     ax.plot(self.train_error_list, color='blue', label='training', lw=2)
@@ -39,13 +39,13 @@ class ErrorCollector():
     plt.legend()
     # save
     save_path = os.path.dirname(os.path.abspath( __file__ )) +  os.sep + 'plots' + os.sep
-    save_name = 'Loss_' + model.name + '_act-'+ activation + '_ep-' + str(epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate) + '.png'
+    save_name = 'Loss_' + model.name + '_ep-' + str(epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate) + '.png'
     if not os.path.exists(save_path):
       os.makedirs(save_path)
     plt.savefig(save_path + save_name, dpi=150, bbox_inches='tight')
     #plt.show()
 
-  def plotTrainTestAcc(self, model, batch_size, learning_rate, epochs,activation='relu'):
+  def plotTrainTestAcc(self, model, batch_size, learning_rate, epochs):
     print("Plot Misclassification")
     fig, ax = plt.subplots(1)
     ax.plot(self.train_acc_list, color='blue', label='training', lw=2)
@@ -61,7 +61,7 @@ class ErrorCollector():
     plt.legend()
     # save
     save_path = os.path.dirname(os.path.abspath( __file__ )) +  os.sep + 'plots' + os.sep
-    save_name = 'Misclass_'+ model.name + '_act-'+ activation + '_ep-' + str(epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate) + '.png'
+    save_name = 'Misclass_'+ model.name + '_ep-' + str(epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate) + '.png'
     if not os.path.exists(save_path):
       os.makedirs(save_path)
     plt.savefig(save_path + save_name, dpi=150, bbox_inches='tight')
