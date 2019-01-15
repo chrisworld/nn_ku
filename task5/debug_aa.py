@@ -34,8 +34,8 @@ if __name__ == '__main__':
 
 
   # Parameters and model
-  epochs = 100
-  learning_rates = [1e-3]
+  epochs = 20
+  learning_rates = [1e-1,1e-2,1e-3,1e-4]
   n_hidden = [14] # number of hidden units within layer
   n_layer = [1]   # number of hidden layers
   activation = ['relu', 'tanh']
@@ -46,9 +46,10 @@ if __name__ == '__main__':
   reber_batches = ReberBatches(n_train_samples, n_val_samples, n_test_samples, batch_size)
   max_sequence_length = reber_batches.train_max_seq_len
 
-  model_tester = RnnModelTester(epochs, learning_rates, max_sequence_length, n_layer, n_hidden, n_symbols=7,
-               n_out=7, rnn_unit='lstm',)
-  model_tester.run(reber_batches, reber_batches)
+  #model_tester = RnnModelTester(epochs, learning_rates, max_sequence_length, n_layer, n_hidden, n_symbols=7,
+  #                              n_out=7, rnn_unit='lstm')
+  model_tester = RnnModelTester(epochs, learning_rates, n_layer, n_hidden)
+  model_tester.run(reber_batches)
 
 
 

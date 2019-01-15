@@ -17,7 +17,7 @@ class RnnModelTester():
     self.n_layer = n_layer
     self.models = []
     self.n_out = n_out
-    self.best_test_acc = 0
+    self.best_test_loss = 0
     self.best_model_param = "None"
     self.n_symbols = n_symbols
     self.rnn_unit = rnn_unit
@@ -46,13 +46,20 @@ class RnnModelTester():
         ec.plotTrainTestAcc(model, batches.batch_size, learning_rate, self.epochs)
         ec.resetErrors()
         evaluator = Evaluator(model, batches, trainer.getSaveFilePath())
-        test_loss, test_acc  = evaluator.eval()
+        #test_loss, test_acc  = evaluator.eval()
+        test_loss = evaluator.eval()
         trainer.resetBestScore()
 
-        if self.best_test_acc == 0 or test_acc > self.best_test_acc:
-          self.best_test_acc = test_acc
+        if self.best_test_loss == 0 or test_loss > self.best_test_loss:
+          self.best_test_loss = test_loss
           self.best_model_param = 'Param_' + model.name + '_ep-' + str(self.epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate)
 
-    print("-----ModelTester finished, best test acc: [%.6f] with model: %s " % (self.best_test_acc, self.best_model_param))
-    logging.info("-----ModelTester finished, best test acc: [%.6f] with model: %s " % (self.best_test_acc, self.best_model_param))
+
+
+        #if self.best_test_acc == 0 or test_acc > self.best_test_acc:
+        #  self.best_test_acc = test_acc
+        #  self.best_model_param = 'Param_' + model.name + '_ep-' + str(self.epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate)
+
+    print("-----ModelTester finished, best test acc: [%.6f] with model: %s " % (self.best_test_loss, self.best_model_param))
+    logging.info("-----ModelTester finished, best test acc: [%.6f] with model: %s " % (self.best_test_loss, self.best_model_param))
 

@@ -30,8 +30,8 @@ class Trainer():
       optimizer_name = 'Gradient Descent'
 
 
-    correct_prediction = tf.equal(self.model.z_, tf.maximum(tf.sign(self.model.last_outputs), 0))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    #orrect_prediction = tf.equal(self.model.z_, tf.maximum(tf.sign(self.model.last_outputs), 0))
+    #accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
     #correct_prediction = tf.equal(tf.argmax(self.model.z,1), tf.argmax(self.model.z_,1))
     #accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float64))

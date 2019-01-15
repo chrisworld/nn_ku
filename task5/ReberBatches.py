@@ -63,9 +63,14 @@ class ReberBatches():
         targets_val_list.append(target)
 
     # create 0-padded numpy matrix
-    self.examples_val = np.zeros((n_val_samples, self.val_max_seq_len, sym_size))
-    self.targets_val = np.zeros((n_val_samples, self.val_max_seq_len, sym_size))
+    self.examples_val = np.zeros((n_val_samples, self.train_max_seq_len, sym_size))
+    self.seq_len_val = np.zeros(n_val_samples)
+    self.targets_val = np.zeros((n_val_samples, self.train_max_seq_len, sym_size))
+
     for sample_idx in range(n_val_samples):
+
+        self.seq_len_val[sample_idx] = self.val_max_seq_len
+
         for str_idx in range(examples_val_list[sample_idx].shape[0]):
             self.examples_val[sample_idx][str_idx] = examples_val_list[sample_idx][str_idx]
             self.targets_val[sample_idx][str_idx] = targets_val_list[sample_idx][str_idx]
@@ -82,9 +87,13 @@ class ReberBatches():
         targets_test_list.append(target)
 
     # create 0-padded numpy matrix
-    self.examples_test = np.zeros((n_test_samples, self.test_max_seq_len, sym_size))
-    self.targets_test = np.zeros((n_test_samples, self.test_max_seq_len, sym_size))
+    self.examples_test = np.zeros((n_test_samples, self.train_max_seq_len, sym_size))
+    self.seq_len_test = np.zeros(n_test_samples)
+    self.targets_test = np.zeros((n_test_samples, self.train_max_seq_len, sym_size))
     for sample_idx in range(n_test_samples):
+
+        self.seq_len_test[sample_idx] = self.test_max_seq_len
+
         for str_idx in range(examples_test_list[sample_idx].shape[0]):
             self.examples_test[sample_idx][str_idx] = examples_test_list[sample_idx][str_idx]
             self.targets_test[sample_idx][str_idx] = targets_test_list[sample_idx][str_idx]
@@ -106,9 +115,14 @@ class ReberBatches():
     # create training batches 
     # number of batches corresponding to batch_size
     self.batch_num = np.ceil(self.examples_train.shape[0] / batch_size)
+    self.batch_num_val = np.ceil(self.examples_val.shape[0] / batch_size)
+    self.batch_num_test = np.ceil(self.examples_test.shape[0] / batch_size)
 
     # split all examples and classes
-    self.batch_examples_train = np.array_split(self.examples_train, self.batch_num) 
-    self.batch_seq_len_train = np.array_split(self.seq_len_train, self.batch_num) 
-    self.batch_target_train = np.array_split(self.targets_train, self.batch_num)  
+    self.batch_examples_train = np.array_split(self.examples_train, self.batch_num)
+    self.batch_target_train = np.array_split(self.targets_train, self.batch_num)
+
+    self.batch_seq_len_train = np.array_split(self.seq_len_train, self.batch_num)
+    self.batch_seq_len_val = np.array_split(self.seq_len_val, self.batch_num_val)
+    self.batch_seq_len_test = np.array_split(self.seq_len_test, self.batch_num_test)
 

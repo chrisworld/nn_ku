@@ -11,7 +11,7 @@ class Evaluator():
   def eval(self):
 
     # evaluation
-    correct_prediction = tf.equal(self.model.z_, tf.maximum(tf.sign(self.model.z), 0))
+    correct_prediction = tf.equal(self.model.z_, tf.maximum(tf.sign(self.model.last_outputs), 0))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
     # restore parameters
@@ -23,10 +23,13 @@ class Evaluator():
     # evaluate tf graph
     with tf.Session() as sess:
       saver.restore(sess, self.save_path)
-      test_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
-      test_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples, self.model.z_: self.batches.classes})
-      print("test loss: [%.6f]" % test_loss, " test acc: [%.6f]" % test_acc)
-      logging.info("test loss: [%.6f]" % test_loss + " test acc: [%.6f]" % test_acc)
+      #test_loss = sess.run(self.model.error, feed_dict={self.model.X: self.batches.examples_test, self.model.z_: self.batches.targets_test})
+      test_loss = sess.run(self.model.error, feed_dict={self.model.X: self.batches.examples_test,
+                                                        self.model.z_: self.batches.targets_test,
+                                                        self.model.seq_length: self.batches.seq_len_test})
+      #test_acc = sess.run(accuracy, feed_dict={self.model.X: self.batches.examples_test, self.model.z_: self.batches.targets_test})
+      print("test loss: [%.6f]" % test_loss)#, " test acc: [%.6f]" % test_acc)
+      logging.info("test loss: [%.6f]" % test_loss)# + " test acc: [%.6f]" % test_acc)
 
-    return test_loss, test_acc
+    return test_loss#, test_acc
 
