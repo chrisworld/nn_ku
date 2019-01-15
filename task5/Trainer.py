@@ -30,7 +30,7 @@ class Trainer():
       optimizer_name = 'Gradient Descent'
 
 
-    correct_prediction = tf.equal(self.model.z_, tf.maximum(tf.sign(self.model.z), 0))
+    correct_prediction = tf.equal(self.model.z_, tf.maximum(tf.sign(self.model.last_outputs), 0))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
     #correct_prediction = tf.equal(tf.argmax(self.model.z,1), tf.argmax(self.model.z_,1))
@@ -54,20 +54,24 @@ class Trainer():
       # run epochs
       for k in range(epochs):
         # gradient over each batch
-        for batch_example, batch_class in zip(self.batches.batch_examples_train, self.batches.batch_target_train):
+        for batch_example, batch_class, batch_seq_len in zip(self.batches.batch_examples_train, self.batches.batch_target_train, self.batches.batch_seq_len_train):
           # training step
-          sess.run(train_step, feed_dict={self.model.X: batch_example, self.model.z_: batch_class, self.model.seq_length: self.model.max_sequence_length})
+          sess.run(train_step, feed_dict={self.model.X: batch_example, self.model.z_: batch_class, self.model.seq_length: batch_seq_len})
         
         # Compute the errors and acc over the training dataset
-        train_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples_train, self.model.z_: self.batches.classes_train})
-        train_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples_train, self.model.z_: self.batches.classes_train})
-        self.error_collector.addTrainError(train_loss)
-        self.error_collector.addTrainAcc(train_acc)
+        #train_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.X: self.batches.examples_train, self.model.z_: self.batches.targets_train, self.model.seq_length: self.batches.seq_len_train})
+        train_err = sess.run(self.model.error, feed_dict={self.model.X: self.batches.examples_train, self.model.z_: self.batches.targets_train, self.model.seq_length: self.batches.seq_len_train})
+        #print("train loss: ", train_loss)
+        print("train loss: ", train_err)
+        #train_acc = sess.run(accuracy, feed_dict={self.model.X: self.batches.examples_train, self.model.z_: self.batches.targets_train, self.model.seq_length: self.batches.seq_len_train})
+        #self.error_collector.addTrainError(train_loss)
+        self.error_collector.addTrainError(train_err)
+        #self.error_collector.addTrainAcc(train_acc)
         # Compute the errors and acc of the validation set
-        test_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
-        test_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
-        self.error_collector.addTestError(test_loss)
-        self.error_collector.addTestAcc(test_acc)
+        #test_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
+        #test_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
+        #self.error_collector.addTestError(test_loss)
+        #self.error_collector.addTestAcc(test_acc)
 
         # Early stopping, save best parameters
         if self.batches.is_validation == True and early_stopping == True:
@@ -89,8 +93,8 @@ class Trainer():
             break
 
         # logging iterations
-        print("Iteration: ",k, " train loss: [%.4f]" % train_loss, " train acc: [%.4f]" % train_acc, " valid loss: [%.4f]" % test_loss, " valid acc: [%.4f]" % test_acc)
-        logging.info("Iteration: %i" % k + " train loss: [%.4f]" % train_loss + " train acc: [%.4f]" % train_acc + " valid loss: [%.4f]" % test_loss + " valid acc: [%.4f]" % test_acc)
+        #print("Iteration: ",k, " train loss: [%.4f]" % train_loss, " train acc: [%.4f]" % train_acc, " valid loss: [%.4f]" % test_loss, " valid acc: [%.4f]" % test_acc)
+        #logging.info("Iteration: %i" % k + " train loss: [%.4f]" % train_loss + " train acc: [%.4f]" % train_acc + " valid loss: [%.4f]" % test_loss + " valid acc: [%.4f]" % test_acc)
       
       if self.batches.is_validation == False or early_stopping == False:
         saver.save(sess, self.save_path + self.file_name)

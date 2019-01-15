@@ -8,9 +8,13 @@ class ReberBatches():
     self.n_test_samples = n_test_samples
     self.batch_size = batch_size
     self.sym_size = sym_size
+    self.max_seq_len = 0
+    
+    self.is_validation = False
 
     # lists
     examples_train_list = []
+    seq_len_train_list = []
     targets_train_list = []
     examples_val_list = []
     targets_val_list = []
@@ -28,6 +32,7 @@ class ReberBatches():
         label = str_to_vec(example)
         target = str_to_next_embed(example)
         example_len = len(example)
+        seq_len_train_list.append(example_len)
         if self.train_max_seq_len < example_len:
             self.train_max_seq_len = example_len
         examples_train_list.append(label)
@@ -36,8 +41,12 @@ class ReberBatches():
 
     # create 0-padded numpy matrix
     self.examples_train = np.zeros((n_train_samples, self.train_max_seq_len, sym_size))
+    self.seq_len_train = np.zeros(n_train_samples)
     self.targets_train = np.zeros((n_train_samples, self.train_max_seq_len, sym_size))
     for sample_idx in range(n_train_samples):
+
+        self.seq_len_train[sample_idx] = self.train_max_seq_len
+
         for str_idx in range(examples_train_list[sample_idx].shape[0]):
             self.examples_train[sample_idx][str_idx] = examples_train_list[sample_idx][str_idx]
             self.targets_train[sample_idx][str_idx] = targets_train_list[sample_idx][str_idx]
@@ -80,6 +89,9 @@ class ReberBatches():
             self.examples_test[sample_idx][str_idx] = examples_test_list[sample_idx][str_idx]
             self.targets_test[sample_idx][str_idx] = targets_test_list[sample_idx][str_idx]
 
+    # max seq length of all reber strings
+    self.max_seq_len = max(self.train_max_seq_len, self.val_max_seq_len, self.test_max_seq_len)
+
     #print("\ntrain matrix: \n", self.examples_train)
     #print("\ntrain matrix: \n", self.targets_train)
     #print("\nval matrix: \n", self.examples_val)
@@ -97,5 +109,6 @@ class ReberBatches():
 
     # split all examples and classes
     self.batch_examples_train = np.array_split(self.examples_train, self.batch_num) 
+    self.batch_seq_len_train = np.array_split(self.seq_len_train, self.batch_num) 
     self.batch_target_train = np.array_split(self.targets_train, self.batch_num)  
 

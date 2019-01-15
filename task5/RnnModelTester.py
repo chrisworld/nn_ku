@@ -9,7 +9,7 @@ import os
 
 # Model Tester class
 class RnnModelTester():
-  def __init__(self, epochs, learning_rates, max_sequence_length, n_layer, n_hidden, n_symbols=7,
+  def __init__(self, epochs, learning_rates, n_layer, n_hidden, n_symbols=7,
                n_out=7, rnn_unit='lstm'):
     self.epochs = epochs
     self.learning_rates = learning_rates
@@ -19,11 +19,10 @@ class RnnModelTester():
     self.n_out = n_out
     self.best_test_acc = 0
     self.best_model_param = "None"
-    self.max_sequence_length = max_sequence_length
     self.n_symbols = n_symbols
     self.rnn_unit = rnn_unit
 
-  def run(self, train_batches, test_batches):
+  def run(self, batches):
     # training and validation error collector
     ec = ErrorCollector()
 
@@ -34,18 +33,19 @@ class RnnModelTester():
 
     for n_hidden in self.n_hidden:
       for n_layer in self.n_layer:
+        print("RNN with max seq len: ", batches.max_seq_len)
         self.models.append(RnnModel(self.n_symbols, n_hidden, self.n_out,
-                                    self.rnn_unit, self.max_sequence_length, n_layer))
+                                    self.rnn_unit, batches.max_seq_len, n_layer))
     
     for model in self.models:
-      trainer = Trainer(model, train_batches, ec)
+      trainer = Trainer(model, batches, ec)
       for learning_rate in self.learning_rates:
         trainer.train(learning_rate, self.epochs, early_stop_lim=25)
         # print error plots
-        ec.plotTrainTestError(model, train_batches.batch_size, learning_rate, self.epochs)
-        ec.plotTrainTestAcc(model, train_batches.batch_size, learning_rate, self.epochs)
+        ec.plotTrainTestError(model, batches.batch_size, learning_rate, self.epochs)
+        ec.plotTrainTestAcc(model, batches.batch_size, learning_rate, self.epochs)
         ec.resetErrors()
-        evaluator = Evaluator(model, test_batches, trainer.getSaveFilePath())
+        evaluator = Evaluator(model, batches, trainer.getSaveFilePath())
         test_loss, test_acc  = evaluator.eval()
         trainer.resetBestScore()
 

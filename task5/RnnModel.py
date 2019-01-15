@@ -21,7 +21,7 @@ class RnnModel():
     self.seq_length = tf.placeholder(tf.int32, [None])
     self.X = tf.placeholder(tf.float32, [None, self.max_sequence_length, self.n_symbols])
     #labels
-    self.z_ = tf.placeholder(tf.float32, [None, self.n_symbols])
+    self.z_ = tf.placeholder(tf.float32, [None, self.max_sequence_length, self.n_symbols])
 
     # define recurrent layer
     if self.cell_type == 'simple':
@@ -37,18 +37,19 @@ class RnnModel():
     cell = tf.contrib.rnn.OutputProjectionWrapper(cell, self.n_out)
 
     outputs, states = tf.nn.dynamic_rnn(cell, self.X, dtype=tf.float32, sequence_length=self.seq_length) # NEW
-    last_outputs = outputs[:,-1,:]
+    self.last_outputs = outputs[:,-1,:]
 
     # add output neuron
-    z_dim = int(self.z_.shape[1])
-    self.w = tf.Variable(tf.truncated_normal([n_hidden, z_dim]))
-    self.b = tf.Variable(tf.constant(.1, shape=[z_dim]))
-
-    self.z = tf.nn.xw_plus_b(last_outputs, self.w, self.b)
+    #z_dim = int(self.z_.shape[1])
+    #self.w = tf.Variable(tf.truncated_normal([n_hidden, z_dim]))
+    #self.b = tf.Variable(tf.constant(.1, shape=[z_dim]))
+    #self.z = tf.nn.xw_plus_b(last_outputs, self.w, self.b)
 
     # define loss, minimizer and error
-    self.cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.z, labels=self.z_)
+    self.cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(logits=outputs, labels=self.z_)
 
+    self.mistakes = tf.not_equal(self.z_, tf.maximum(tf.sign(outputs), 0))
+    self.error = tf.reduce_mean(tf.cast(self.mistakes, tf.float32))
 
     # This is incorporated in the Trainer
     #correct_prediction = tf.equal(y, tf.maximum(tf.sign(y_pred), 0))
