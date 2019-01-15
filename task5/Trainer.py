@@ -43,9 +43,9 @@ class Trainer():
 
     # logging infos
     print("-----Training-----")
-    print('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation +  ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    print('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name +  ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
     logging.info("-----Training-----")
-    logging.info('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name + ', Activation: ' + self.model.activation + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    logging.info('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
 
     early_stop_counter = 0
     with tf.Session() as sess:
@@ -54,9 +54,9 @@ class Trainer():
       # run epochs
       for k in range(epochs):
         # gradient over each batch
-        for batch_example, batch_class in zip(self.batches.batch_examples_train, self.batches.batch_classes_train):
+        for batch_example, batch_class in zip(self.batches.batch_examples_train, self.batches.batch_target_train):
           # training step
-          sess.run(train_step, feed_dict={self.model.x: batch_example, self.model.z_: batch_class})
+          sess.run(train_step, feed_dict={self.model.X: batch_example, self.model.z_: batch_class, self.model.seq_length: self.model.max_sequence_length})
         
         # Compute the errors and acc over the training dataset
         train_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples_train, self.model.z_: self.batches.classes_train})

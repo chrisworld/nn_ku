@@ -18,8 +18,8 @@ class RnnModel():
 
 
     print('---Create RNN Model--- ')
-    seq_length = tf.placeholder(tf.int32, [None])
-    X = tf.placeholder(tf.float32, [None, self.max_sequence_length, self.n_symbols])
+    self.seq_length = tf.placeholder(tf.int32, [None])
+    self.X = tf.placeholder(tf.float32, [None, self.max_sequence_length, self.n_symbols])
     #labels
     self.z_ = tf.placeholder(tf.float32, [None, self.n_symbols])
 
@@ -34,9 +34,9 @@ class RnnModel():
     else:
       raise ValueError('bad cell type.')
 
-    cell = tf.contrib.rnn.OutputProjectionWrapper(cell, 7)
+    cell = tf.contrib.rnn.OutputProjectionWrapper(cell, self.n_out)
 
-    outputs, states = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32, sequence_length=seq_length) # NEW
+    outputs, states = tf.nn.dynamic_rnn(cell, self.X, dtype=tf.float32, sequence_length=self.seq_length) # NEW
     last_outputs = outputs[:,-1,:]
 
     # add output neuron

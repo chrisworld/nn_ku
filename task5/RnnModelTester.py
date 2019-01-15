@@ -10,13 +10,12 @@ import os
 # Model Tester class
 class RnnModelTester():
   def __init__(self, epochs, learning_rates, max_sequence_length, n_layer, n_hidden, n_symbols=7,
-               n_in=300, n_out=26, rnn_unit='lstm'):
+               n_out=7, rnn_unit='lstm'):
     self.epochs = epochs
     self.learning_rates = learning_rates
     self.n_hidden = n_hidden
     self.n_layer = n_layer
     self.models = []
-    self.n_in = n_in
     self.n_out = n_out
     self.best_test_acc = 0
     self.best_model_param = "None"
