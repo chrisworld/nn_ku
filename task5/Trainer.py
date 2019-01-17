@@ -24,17 +24,12 @@ class Trainer():
     # setup training
     if adam_optimizer == True:
       train_step = tf.train.AdamOptimizer(learning_rate).minimize(self.model.cross_entropy)
-      optimizer_name = 'Adam'
+      self.optimizer_name = 'Adam'
     else:
       train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(self.model.cross_entropy)
-      optimizer_name = 'Gradient Descent'
+      self.optimizer_name = 'Gradient_Descent'
 
 
-    #orrect_prediction = tf.equal(self.model.z_, tf.maximum(tf.sign(self.model.last_outputs), 0))
-    #accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-    #correct_prediction = tf.equal(tf.argmax(self.model.z,1), tf.argmax(self.model.z_,1))
-    #accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float64))
 
     # init variables
     init = tf.global_variables_initializer() 
@@ -43,9 +38,9 @@ class Trainer():
 
     # logging infos
     print("-----Training-----")
-    print('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name +  ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    print('Model: ' + self.model.name + ', Optimizer: ' + self.optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
     logging.info("-----Training-----")
-    logging.info('Model: ' + self.model.name + ', Optimizer: ' + optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
+    logging.info('Model: ' + self.model.name + ', Optimizer: ' + self.optimizer_name + ', Epochs: ' + str(epochs) + ', Hidden Units: ' + str(self.model.n_hidden) + ', HiddenLayer: ' + str(self.model.n_layer) + ', LearningRate: ' + str(learning_rate))
 
     early_stop_counter = 0
     with tf.Session() as sess:
@@ -59,19 +54,23 @@ class Trainer():
           sess.run(train_step, feed_dict={self.model.X: batch_example, self.model.z_: batch_class, self.model.seq_length: batch_seq_len})
         
         # Compute the errors and acc over the training dataset
-        #train_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.X: self.batches.examples_train, self.model.z_: self.batches.targets_train, self.model.seq_length: self.batches.seq_len_train})
+
         train_err = sess.run(self.model.error, feed_dict={self.model.X: self.batches.examples_train, self.model.z_: self.batches.targets_train, self.model.seq_length: self.batches.seq_len_train})
+        test_loss = sess.run(self.model.error, feed_dict={self.model.X: self.batches.examples_val,
+                                                          self.model.z_: self.batches.targets_val,
+                                                          self.model.seq_length: self.batches.seq_len_val})
         #print("train loss: ", train_loss)
-        print("train loss: ", train_err)
+        print("ep: ", k, ",   train loss: ", train_err)
         #train_acc = sess.run(accuracy, feed_dict={self.model.X: self.batches.examples_train, self.model.z_: self.batches.targets_train, self.model.seq_length: self.batches.seq_len_train})
         #self.error_collector.addTrainError(train_loss)
         self.error_collector.addTrainError(train_err)
-        #self.error_collector.addTrainAcc(train_acc)
+
         # Compute the errors and acc of the validation set
-        #test_loss = sess.run(self.model.cross_entropy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
-        #test_acc = sess.run(accuracy, feed_dict={self.model.x: self.batches.examples_validation, self.model.z_: self.batches.classes_validation})
-        #self.error_collector.addTestError(test_loss)
-        #self.error_collector.addTestAcc(test_acc)
+
+        self.error_collector.addTestError(test_loss)
+
+
+
 
         # Early stopping, save best parameters
         if self.batches.is_validation == True and early_stopping == True:
@@ -80,7 +79,7 @@ class Trainer():
             #print("---Model saved: %s" % self.save_path + self.file_name)
             saver.save(sess, self.save_path + self.file_name)
             self.best_validation_loss = test_loss
-            self.best_validation_acc = test_acc
+            #self.best_validation_acc = test_acc
             self.best_epoch = k
             early_stop_counter = 0
           else:
@@ -99,6 +98,7 @@ class Trainer():
       if self.batches.is_validation == False or early_stopping == False:
         saver.save(sess, self.save_path + self.file_name)
 
+      #self.error_collector.addConvergenceTime()
 
     # finish log
     print("-----Training finished with best validation loss: [%.4f] validation acc: [%.4f] at epoch:[%i]" %(self.best_validation_loss, self.best_validation_acc, self.best_epoch) )

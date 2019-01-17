@@ -4,7 +4,7 @@ import numpy.random as rd
 
 # ResNetModel
 class RnnModel():
-  def __init__(self, n_symbols, n_hidden, n_out, rnn_unit, max_sequence_length,  n_layer):
+  def __init__(self, n_symbols, n_hidden, n_out, rnn_unit, max_sequence_length,  n_layer, adam_optimizer):
     self.name = 'RNN_Model_' + rnn_unit 
     self.n_symbols = n_symbols
     self.n_hidden = n_hidden
@@ -12,6 +12,13 @@ class RnnModel():
     self.n_layer = n_layer 
     self.cell_type = rnn_unit
     self.max_sequence_length = max_sequence_length
+    self.adam_optimizer = adam_optimizer
+
+
+    if adam_optimizer == True:
+      self.optimizer_name = 'Adam'
+    else:
+      self.optimizer_name = 'GD'
 
     self.w = []
     self.b = []
