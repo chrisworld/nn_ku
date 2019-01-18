@@ -17,15 +17,16 @@ class ErrorCollector():
     self.train_acc_list = []
     self.test_acc_list = []
 
-  def addConvergenceTime(self):
-    test_error_array = np.array(self.test_error_list)
-    epoch_of_convergence = np.nonzero(test_error_array<1e-7)[0][0] + 1
-    self.convergence_time_list.append(epoch_of_convergence)
+  def addConvergenceTime(self, epoch):
+    #test_error_array = np.array(self.test_error_list)
+    #epoch_of_convergence = np.nonzero(test_error_array<1e-7)[0][0] + 1
+    #self.convergence_time_list.append(epoch_of_convergence)
+    self.convergence_time_list.append(epoch)
 
   def convergenceTimeMeanAndStd(self):
     convergence_time_mean = np.mean(self.convergence_time_list)
     convergence_time_std = np.std(self.convergence_time_list)
-
+    print("-----ModelTester Convergence Time of Models-----")
     print("convergence time in epochs\nmean:                 [%.2f]\n standard deviation:  [%.2f]" %(convergence_time_mean,convergence_time_std))
     logging.info("convergence time in epochs\nmean:                 [%.2f]\n standard deviation:  [%.2f]" %(convergence_time_mean,convergence_time_std))
 
@@ -45,7 +46,7 @@ class ErrorCollector():
   def addTestAcc(self, test_acc):
     self.test_acc_list.append(1-test_acc)
 
-  def plotTrainTestError(self, model, batch_size, learning_rate, epochs):
+  def plotTrainTestError(self, model, batch_size, learning_rate, epochs, plot_id):
     print("Plot Errors")
     fig, ax = plt.subplots(1)
     ax.plot(self.train_error_list, color='blue', label='training', lw=2)
@@ -58,7 +59,7 @@ class ErrorCollector():
     plt.legend()
     # save
     save_path = os.path.dirname(os.path.abspath( __file__ )) +  os.sep + 'plots' + os.sep
-    save_name = 'Loss_' + model.name + '_ep-' + str(epochs) + '_hidu-' + str(model.n_hidden) + '_opt-'+ str(model.optimizer_name) + '_lr-' + str(learning_rate) + '.png'
+    save_name = 'Loss_' + model.name + '_ep-' + str(epochs) + '_hidu-' + str(model.n_hidden) + '_opt-'+ str(model.optimizer_name) + '_lr-' + str(learning_rate) + '_id-' + str(plot_id) + '.png'
     if not os.path.exists(save_path):
       os.makedirs(save_path)
     plt.savefig(save_path + save_name, dpi=150, bbox_inches='tight')

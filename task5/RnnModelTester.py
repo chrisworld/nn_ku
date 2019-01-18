@@ -18,6 +18,7 @@ class RnnModelTester():
     self.models = []
     self.n_out = n_out
     self.best_test_loss = 0
+    self.best_conv_time = 100000
     self.best_model_param = "None"
     self.n_symbols = n_symbols
     self.rnn_unit = rnn_unit
@@ -30,39 +31,37 @@ class RnnModelTester():
     print("-----ModelTester-----")
     logging.info("-----ModelTester-----")
 
-
-
+    # create models
     for n_hidden in self.n_hidden:
       for n_layer in self.n_layer:
         print("RNN with max seq len: ", batches.max_seq_len)
         self.models.append(RnnModel(self.n_symbols, n_hidden, self.n_out,
                                     self.rnn_unit, batches.max_seq_len, n_layer, self.adam_optimizer))
     
+    # training and evaluation
+    plot_id = 0
     for model in self.models:
       trainer = Trainer(model, batches, ec)
       for learning_rate in self.learning_rates:
-        trainer.train(learning_rate, self.epochs, adam_optimizer=self.adam_optimizer, early_stop_lim=10)
+        plot_id += 1
+        trainer.train(learning_rate, self.epochs, adam_optimizer=self.adam_optimizer, early_stopping=True, early_stop_lim=5)
         # print error plots
-        ec.plotTrainTestError(model, batches.batch_size, learning_rate, self.epochs)
-        #ec.plotTrainTestAcc(model, batches.batch_size, learning_rate, self.epochs)
+        ec.plotTrainTestError(model, batches.batch_size, learning_rate, self.epochs, plot_id)
         ec.resetErrors()
         evaluator = Evaluator(model, batches, trainer.getSaveFilePath())
-        #test_loss, test_acc  = evaluator.eval()
         test_loss = evaluator.eval()
+
+        # get best conversion time
+        if trainer.best_epoch < self.best_conv_time:
+          self.best_conv_time = trainer.best_epoch
+          self.best_model_param = 'Param_' + model.name + '_ep-' + str(self.epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate) + '_id-' + str(plot_id)
+
+        # reset scores
         trainer.resetBestScore()
 
-        if self.best_test_loss == 0 or test_loss > self.best_test_loss:
-          self.best_test_loss = test_loss
-          self.best_model_param = 'Param_' + model.name + '_ep-' + str(self.epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate)
-
-
-
-        #if self.best_test_acc == 0 or test_acc > self.best_test_acc:
-        #  self.best_test_acc = test_acc
-        #  self.best_model_param = 'Param_' + model.name + '_ep-' + str(self.epochs) + '_hidu-' + str(model.n_hidden) + '_hidl-' + str(model.n_layer) + '_lr-' + str(learning_rate)
-
+    # print convergence times
     ec.convergenceTimeMeanAndStd()
 
-    print("-----ModelTester finished, best test error: [%.6f] with model: %s " % (self.best_test_loss, self.best_model_param))
-    logging.info("-----ModelTester finished, best test error: [%.6f] with model: %s " % (self.best_test_loss, self.best_model_param))
+    print("-----ModelTester finished, best test error: [%.6f] and conv time (epochs): [%i] with model: %s " % (self.best_test_loss, self.best_conv_time, self.best_model_param))
+    logging.info("-----ModelTester finished, best test error: [%.6f] and conv time (epochs): [%i] with model: %s " % (self.best_test_loss, self.best_conv_time, self.best_model_param))
 

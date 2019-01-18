@@ -23,7 +23,6 @@ class RnnModel():
     self.w = []
     self.b = []
 
-
     print('---Create RNN Model--- ')
     self.seq_length = tf.placeholder(tf.int32, [None])
     self.X = tf.placeholder(tf.float32, [None, self.max_sequence_length, self.n_symbols])
@@ -45,12 +44,6 @@ class RnnModel():
 
     outputs, states = tf.nn.dynamic_rnn(cell, self.X, dtype=tf.float32, sequence_length=self.seq_length) # NEW
     self.last_outputs = outputs[:,-1,:]
-
-    # add output neuron
-    #z_dim = int(self.z_.shape[1])
-    #self.w = tf.Variable(tf.truncated_normal([n_hidden, z_dim]))
-    #self.b = tf.Variable(tf.constant(.1, shape=[z_dim]))
-    #self.z = tf.nn.xw_plus_b(last_outputs, self.w, self.b)
 
     # define loss, minimizer and error
     self.cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(logits=outputs, labels=self.z_)

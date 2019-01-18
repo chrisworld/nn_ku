@@ -10,7 +10,8 @@ class ReberBatches():
     self.sym_size = sym_size
     self.max_seq_len = 0
     
-    self.is_validation = False
+    # always has validation set
+    self.is_validation = True
 
     # lists
     examples_train_list = []
@@ -37,19 +38,6 @@ class ReberBatches():
             self.train_max_seq_len = example_len
         examples_train_list.append(label)
         targets_train_list.append(target)
-        #print('\n\nReber String: ' + example + '\none hot: \n' + str(label) + '\nnext : \n' + str(target))
-
-    # create 0-padded numpy matrix
-    self.examples_train = np.zeros((n_train_samples, self.train_max_seq_len, sym_size))
-    self.seq_len_train = np.zeros(n_train_samples)
-    self.targets_train = np.zeros((n_train_samples, self.train_max_seq_len, sym_size))
-    for sample_idx in range(n_train_samples):
-
-        self.seq_len_train[sample_idx] = self.train_max_seq_len
-
-        for str_idx in range(examples_train_list[sample_idx].shape[0]):
-            self.examples_train[sample_idx][str_idx] = examples_train_list[sample_idx][str_idx]
-            self.targets_train[sample_idx][str_idx] = targets_train_list[sample_idx][str_idx]
 
     # create list of validation examples
     for n in range(n_val_samples):
@@ -62,20 +50,7 @@ class ReberBatches():
         examples_val_list.append(label)
         targets_val_list.append(target)
 
-    # create 0-padded numpy matrix
-    self.examples_val = np.zeros((n_val_samples, self.train_max_seq_len, sym_size))
-    self.seq_len_val = np.zeros(n_val_samples)
-    self.targets_val = np.zeros((n_val_samples, self.train_max_seq_len, sym_size))
-
-    for sample_idx in range(n_val_samples):
-
-        self.seq_len_val[sample_idx] = self.val_max_seq_len
-
-        for str_idx in range(examples_val_list[sample_idx].shape[0]):
-            self.examples_val[sample_idx][str_idx] = examples_val_list[sample_idx][str_idx]
-            self.targets_val[sample_idx][str_idx] = targets_val_list[sample_idx][str_idx]
-
-    # create list of test examples
+        # create list of test examples
     for n in range(n_test_samples):
         example = make_embedded_reber()
         label = str_to_vec(example)
@@ -86,31 +61,38 @@ class ReberBatches():
         examples_test_list.append(label)
         targets_test_list.append(target)
 
-    # create 0-padded numpy matrix
-    self.examples_test = np.zeros((n_test_samples, self.train_max_seq_len, sym_size))
-    self.seq_len_test = np.zeros(n_test_samples)
-    self.targets_test = np.zeros((n_test_samples, self.train_max_seq_len, sym_size))
-    for sample_idx in range(n_test_samples):
-
-        self.seq_len_test[sample_idx] = self.test_max_seq_len
-
-        for str_idx in range(examples_test_list[sample_idx].shape[0]):
-            self.examples_test[sample_idx][str_idx] = examples_test_list[sample_idx][str_idx]
-            self.targets_test[sample_idx][str_idx] = targets_test_list[sample_idx][str_idx]
-
     # max seq length of all reber strings
     self.max_seq_len = max(self.train_max_seq_len, self.val_max_seq_len, self.test_max_seq_len)
 
-    #print("\ntrain matrix: \n", self.examples_train)
-    #print("\ntrain matrix: \n", self.targets_train)
-    #print("\nval matrix: \n", self.examples_val)
-    #print("\nval matrix: \n", self.targets_val)
-    #print("\ntest matrix: \n", self.examples_test)
-    #print("\ntest matrix: \n", self.targets_test)
+    # create 0-padded numpy matrix for train
+    self.examples_train = np.zeros((n_train_samples, self.max_seq_len, sym_size))
+    self.seq_len_train = np.zeros(n_train_samples)
+    self.targets_train = np.zeros((n_train_samples, self.max_seq_len, sym_size))
+    for sample_idx in range(n_train_samples):
+        self.seq_len_train[sample_idx] = self.max_seq_len
+        for str_idx in range(examples_train_list[sample_idx].shape[0]):
+            self.examples_train[sample_idx][str_idx] = examples_train_list[sample_idx][str_idx]
+            self.targets_train[sample_idx][str_idx] = targets_train_list[sample_idx][str_idx]
 
-    #print("max seq len: ", self.train_max_seq_len)
-    #print("max seq len: ", self.val_max_seq_len)
-    #print("max seq len: ", self.test_max_seq_len)
+    # create 0-padded numpy matrix for validation
+    self.examples_val = np.zeros((n_val_samples, self.max_seq_len, sym_size))
+    self.seq_len_val = np.zeros(n_val_samples)
+    self.targets_val = np.zeros((n_val_samples, self.max_seq_len, sym_size))
+    for sample_idx in range(n_val_samples):
+        self.seq_len_val[sample_idx] = self.max_seq_len
+        for str_idx in range(examples_val_list[sample_idx].shape[0]):
+            self.examples_val[sample_idx][str_idx] = examples_val_list[sample_idx][str_idx]
+            self.targets_val[sample_idx][str_idx] = targets_val_list[sample_idx][str_idx]
+
+    # create 0-padded numpy matrix for test
+    self.examples_test = np.zeros((n_test_samples, self.max_seq_len, sym_size))
+    self.seq_len_test = np.zeros(n_test_samples)
+    self.targets_test = np.zeros((n_test_samples, self.max_seq_len, sym_size))
+    for sample_idx in range(n_test_samples):
+        self.seq_len_test[sample_idx] = self.max_seq_len
+        for str_idx in range(examples_test_list[sample_idx].shape[0]):
+            self.examples_test[sample_idx][str_idx] = examples_test_list[sample_idx][str_idx]
+            self.targets_test[sample_idx][str_idx] = targets_test_list[sample_idx][str_idx]
 
     # create training batches 
     # number of batches corresponding to batch_size

@@ -22,27 +22,28 @@ if __name__ == '__main__':
   logging.basicConfig(filename=log_file_path + log_file_name, level=logging.INFO)
 
   # Parameters and model
-  epochs = 200
-  learning_rate = [1e-5]
+  epochs = 100
+  learning_rates = [1e-1, 1e-2]
   n_hidden = [14] # number of hidden units within layer
   n_layer = [1]   # number of hidden layers
-  rnn_unit = ['simple', 'lstm', 'gru']
+  rnn_unit = ['lstm']
 
   # Get Grammar data
-  batch_size = 2
-  #n_train_samples = 5000
-  #n_val_samples = 500
-  #n_test_samples = 500
+  batch_size = 40
+  n_train_samples = 5000
+  n_val_samples = 500
+  n_test_samples = 500
 
-  n_train_samples = 10
-  n_val_samples = 2
-  n_test_samples = 2
+  #n_train_samples = 50
+  #n_val_samples = 2
+  #n_test_samples = 2
 
   reber_batches = ReberBatches(n_train_samples, n_val_samples, n_test_samples, batch_size)
   #print (reber_batches.batch_examples_train)
 
-  model_tester = RnnModelTester(epochs, learning_rate, n_layer, n_hidden)
+  model_tester = RnnModelTester(epochs, learning_rates, n_layer, n_hidden, adam_optimizer=True)
   model_tester.run(reber_batches)
+
   #train_batches = bn.getBatches(X, C)
   #test_batches = bn.getBatches(X_tst, C_tst, test=True)
 
