@@ -34,9 +34,10 @@ class RnnModelTester():
     # create models
     for n_hidden in self.n_hidden:
       for n_layer in self.n_layer:
-        print("RNN with max seq len: ", batches.max_seq_len)
-        self.models.append(RnnModel(self.n_symbols, n_hidden, self.n_out,
-                                    self.rnn_unit, batches.max_seq_len, n_layer, self.adam_optimizer))
+        for rnn_unit in self.rnn_unit:
+            print("RNN with max seq len: ", batches.max_seq_len)
+            self.models.append(RnnModel(self.n_symbols, n_hidden, self.n_out,
+                                        rnn_unit, batches.max_seq_len, n_layer, self.adam_optimizer))
     
     # training and evaluation
     plot_id = 0
@@ -44,7 +45,7 @@ class RnnModelTester():
       trainer = Trainer(model, batches, ec)
       for learning_rate in self.learning_rates:
         plot_id += 1
-        trainer.train(learning_rate, self.epochs, adam_optimizer=self.adam_optimizer, early_stopping=True, early_stop_lim=5)
+        trainer.train(learning_rate, self.epochs, adam_optimizer=self.adam_optimizer, early_stopping=True, early_stop_lim=10)
         # print error plots
         ec.plotTrainTestError(model, batches.batch_size, learning_rate, self.epochs, plot_id)
         ec.resetErrors()

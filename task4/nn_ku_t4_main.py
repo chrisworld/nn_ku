@@ -541,8 +541,8 @@ if __name__ == '__main__':
   logging.basicConfig(filename=log_file_path + log_file_name, level=logging.INFO)
 
   # Parameters and model
-  epochs = 2
-  learning_rate = [1e-4, 1e-5]
+  epochs = 100
+  learning_rate = [3e-5]
   n_hidden = [40] # number of hidden units within layer
   n_layer = [9]   # number of hidden layers
   activation = ['relu', 'tanh']

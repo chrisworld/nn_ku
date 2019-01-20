@@ -14,16 +14,13 @@ class RnnModel():
     self.max_sequence_length = max_sequence_length
     self.adam_optimizer = adam_optimizer
 
-
+    # Set optimizer
     if adam_optimizer == True:
       self.optimizer_name = 'Adam'
     else:
       self.optimizer_name = 'GD'
 
-    self.w = []
-    self.b = []
-
-    print('---Create RNN Model--- ')
+    print('---Create ' + self.name + '---')
     self.seq_length = tf.placeholder(tf.int32, [None])
     self.X = tf.placeholder(tf.float32, [None, self.max_sequence_length, self.n_symbols])
     #labels
@@ -40,9 +37,9 @@ class RnnModel():
     else:
       raise ValueError('bad cell type.')
 
-    cell = tf.contrib.rnn.OutputProjectionWrapper(cell, self.n_out)
+    cell = tf.contrib.rnn.OutputProjectionWrapper(cell, self.n_out, reuse=tf.AUTO_REUSE)
 
-    outputs, states = tf.nn.dynamic_rnn(cell, self.X, dtype=tf.float32, sequence_length=self.seq_length) # NEW
+    outputs, states = tf.nn.dynamic_rnn(cell, self.X, dtype=tf.float32, sequence_length=self.seq_length)
     self.last_outputs = outputs[:,-1,:]
 
     # define loss, minimizer and error
